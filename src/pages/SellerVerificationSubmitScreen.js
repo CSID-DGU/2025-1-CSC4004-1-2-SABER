@@ -20,7 +20,7 @@ function SellerVerificationSubmitScreen() {
         <div className="logo-with-text" onClick={goToStart}>
           <img src={logoImage} alt="SABER Logo" className="logo-image" />
           <div className="logo-text">SABER</div>
-        </div>
+        </div> 
         <div className="menuIcon">☰</div>
       </div>
 

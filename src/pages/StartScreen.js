@@ -19,7 +19,7 @@ export default function StartScreen() {
               console.error('토큰 발급 실패', error);
               setLoadingToken(false);
           }
-      }
+      } 
       issueBuyerToken();
   }, []);
   

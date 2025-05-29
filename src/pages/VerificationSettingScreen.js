@@ -18,7 +18,7 @@ export default function VerificationSettingScreen() {
   const isNextDisabled = selectedOptions.length === 0;
   const location = useLocation();
   const categoryId = location.state.categoryId;
-
+ 
   useEffect(() => {
 
     const fetchVerifications = async () => {

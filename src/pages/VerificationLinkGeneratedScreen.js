@@ -88,7 +88,7 @@ export default function VerificationLinkGeneratedScreen({ verificationId }) {
 
             <div className="link-container">
                 {link && (
-                    <div>
+                    <div> 
                         <p><a href={link} target="_blank" rel="noreferrer">{link}</a></p>
                         <p>상태: {status}</p>
                         {copied && <p className="info-text">5초 후 다음 화면으로 이동합니다...</p>}
