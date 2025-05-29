@@ -1,6 +1,7 @@
 package com.oss.saber.controller;
 
 import com.oss.saber.domain.Category;
+import com.oss.saber.domain.DefaultVerification;
 import com.oss.saber.dto.CategoryResponse;
 import com.oss.saber.dto.DefaultVerificationResponse;
 import com.oss.saber.dto.mapper.CategoryMapper;
@@ -34,11 +35,11 @@ public class CategoryRestController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/categories/{categoryId}")
-    @Operation(summary = "기본 인증 방식 조회", description = "해당 품목의 기본 인증 방식을 조회할 수 있습니다. ")
-    public ResponseEntity<List<DefaultVerificationResponse>> getDefaultVerifications(@PathVariable Long categoryId) {
-        Category category = categoryService.getCategoryById(categoryId);
-        List<DefaultVerificationResponse> responses = category.getDefaultVerifications().stream()
+    @GetMapping("/categories/{categoryId}/recommended-verifications")
+    @Operation(summary = "추천 인증 방식 조회", description = "해당 품목에 추천된 기본 인증 방식을 조회합니다.")
+    public ResponseEntity<List<DefaultVerificationResponse>> getRecommendedVerifications(@PathVariable Long categoryId) {
+        List<DefaultVerification> recommended = categoryService.getRecommendedVerifications(categoryId);
+        List<DefaultVerificationResponse> responses = recommended.stream()
                 .map(DefaultVerificationMapper::toResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);

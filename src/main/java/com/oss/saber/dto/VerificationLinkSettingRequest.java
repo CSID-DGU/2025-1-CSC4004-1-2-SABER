@@ -12,5 +12,5 @@ import java.util.List;
 public class VerificationLinkSettingRequest {
     private Integer limitedMinutes;
     private String customRequests;
-    private List<Integer> VerificationMethods;
+    private List<Long> VerificationMethods;
 }

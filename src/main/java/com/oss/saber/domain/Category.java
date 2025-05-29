@@ -19,12 +19,6 @@ public class Category {
 
     private String name;
 
-    @ManyToMany
-    @Builder.Default
-    @JoinTable(
-            name = "category_default_verifications",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "method_id")
-    )
-    private List<DefaultVerification> defaultVerifications = new ArrayList<>();
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategoryDefaultVerification> categoryDefaultVerifications = new ArrayList<>();
 }
