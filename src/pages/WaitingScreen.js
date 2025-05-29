@@ -46,15 +46,6 @@ function WaitingScreen() {
       <h2 className="title-medium">판매자 인증 진행중</h2>
       <p className="subtitle-small">잠시만 기다려주세요</p>
 
-      <div className="link-container">
-        <p className="link-text">{verificationLink}</p>
-        <div className="copy-icon" onClick={handleCopyClick}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8v-2h11v2zm0-4H8v-2h11v2zm0-4H8V7h11v2z"/>
-          </svg>
-        </div>
-      </div>
-
       <div className="waiting-button" onClick={Next}>판매자가 인증을 진행하고 있습니다</div>
     </div>
   );

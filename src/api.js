@@ -11,8 +11,11 @@ const FRONTEND_URL = 'http://localhost:3000';
 // 카테고리 목록 조회 (GET /api/categories)
 export const fetchCategories = () => api.get('/categories');
 
-// 기본 인증 옵션 조회 (GET /api/categories/{categoryId})
-export const fetchDefaultVerifications = (categoryId) => api.get(`/categories/${categoryId}`);
+// 전체 인증 옵션 조회 (GET /api/defaultVerifications)
+export const fetchAllDefaultVerifications = () => api.get('/defaultVerifications');
+
+// 추천 인증 옵션 조회 (GET /api/categories/{categoryId}/recommended-verifications)
+export const fetchRecommendedVerifications = (categoryId) => api.get(`/categories/${categoryId}/recommended-verifications`);
 
 // 카테고리 선택 (POST /api/settings/category)
 export const setCategory = (categoryId) =>

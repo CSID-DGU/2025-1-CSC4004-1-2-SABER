@@ -1,188 +1,161 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/Buyers.css';
 import logoImage from '../assets/logo.png';
+import {fetchRecommendedVerifications, fetchAllDefaultVerifications, setVerificationOptions} from "../api";
+
+const TIME_OPTIONS = [3, 5, 7, 10, 30];
 
 export default function VerificationSettingScreen() {
   const [selectedTime, setSelectedTime] = useState(null);
-  const [initialAdditionalRequirement, setInitialAdditionalRequirement] = useState('');
-  const [dynamicRequirements, setDynamicRequirements] = useState([]);
-  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [initialRequirement, setInitialRequirement] = useState('');
+  const [requirements, setRequirements] = useState([]);
+  const [defaultOptions, setDefaultOptions] = useState([]);
+  const [recommendedOptions, setRecommendedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
   const navigate = useNavigate();
+  const isNextDisabled = selectedOptions.length === 0;
+  const location = useLocation();
+  const categoryId = location.state.categoryId;
 
-  // The '다음' button should be disabled if no method is selected
-  // and also if verificationId is null (as per your original isDisabled logic, though it's already implicitly handled if submission depends on verificationId)
-  const isNextButtonDisabled = selectedMethod === null;
+  useEffect(() => {
 
-  const handleTimeSelect = (time) => {
-    setSelectedTime(time === selectedTime ? null : time);
-  };
-
-  // 첫 번째(고정된) 입력 필드의 값 변경 핸들러
-  const handleInitialAdditionalRequirementChange = (event) => {
-    setInitialAdditionalRequirement(event.target.value);
-  };
-
-  // 동적으로 추가된 입력 필드의 값 변경 핸들러
-  const handleDynamicRequirementChange = (id, event) => {
-    setDynamicRequirements(
-      dynamicRequirements.map((req) =>
-        req.id === id ? { ...req, value: event.target.value } : req
-      )
-    );
-  };
-
-  // '추가' 버튼 클릭 핸들러
-  const handleAddRequirement = () => {
-    // 새로운 입력 필드를 추가할 때마다 고유한 ID를 부여합니다.
-    const newId = Date.now(); // 간단한 고유 ID 생성 (실제 앱에서는 더 견고한 ID 생성 방식 사용)
-    setDynamicRequirements([...dynamicRequirements, { id: newId, value: '' }]);
-  };
-
-  // 동적으로 추가된 입력 필드 삭제 핸들러 (선택 사항)
-  const handleRemoveRequirement = (id) => {
-    setDynamicRequirements(dynamicRequirements.filter((req) => req.id !== id));
-  };
-
-  const handleMethodSelect = (method) => {
-    setSelectedMethod(method === selectedMethod ? null : method);
-  };
-
-  const goToPermissionScreen = () => {
-    const allRequirements = [];
-    if (initialAdditionalRequirement.trim() !== '') {
-      allRequirements.push(initialAdditionalRequirement.trim());
-    }
-    dynamicRequirements.forEach(req => {
-      if (req.value.trim() !== '') {
-        allRequirements.push(req.value.trim());
+    const fetchVerifications = async () => {
+      try {
+        const [defaultRes, recommendedRes] = await Promise.all([
+          fetchAllDefaultVerifications(),
+          fetchRecommendedVerifications(categoryId)
+        ]);
+        setDefaultOptions(defaultRes.data);
+        setRecommendedOptions(recommendedRes.data);
+      } catch (err) {
+        console.error("인증 방식 조회 실패", err);
       }
-    });
-    console.log("모든 인증 요구사항:", allRequirements);
+    };
+    fetchVerifications();
+  }, [categoryId]);
 
-    navigate('/permission');
-  };
-
-  const goToHome = () => {
-    navigate('/');
+  const handleRequirementChange = (id, value) => {
+    setRequirements(reqs => reqs.map(r => (r.id === id ? { ...r, value } : r)));
   };
 
   const handleSubmit = async () => {
-    const timeLimit = selectedTime === '기타' ? null : selectedTime.replace('분', '');
+    if (!selectedTime) return alert('인증 제한 시간을 선택해주세요.');
+    const verificationId = location.state.verificationLinkId;
 
-    const allRequirements = [];
-    if (initialAdditionalRequirement.trim() !== '') {
-      allRequirements.push(initialAdditionalRequirement.trim());
+    const customRequests = [
+      initialRequirement,
+      ...requirements.map(r => r.value)
+    ].filter(Boolean).join('\n');
+
+    const payload = {
+      limitedMinutes: selectedTime,
+      customRequests,
+      verificationMethods: selectedOptions,
+    };
+
+    try {
+      await setVerificationOptions(verificationId, payload);
+      alert('설정 완료');
+      navigate('/permission');
+    } catch (err) {
+      console.error('설정 전송 실패', err);
+      alert('설정 전송 중 오류가 발생했습니다.');
     }
-    dynamicRequirements.forEach(req => {
-      if (req.value.trim() !== '') {
-        allRequirements.push(req.value.trim());
-      }
-    });
-    const customRequests = allRequirements.join(', ');
-
-    const verificationMethod = selectedMethod === '사진 촬영' ? 1
-        : selectedMethod === '동영상 촬영' ? 2
-            : null;
-
-    alert('상세 설정 완료');
   };
 
-  
+  const toggleOption = (id) => {
+    setSelectedOptions(opts =>
+        opts.includes(id) ? opts.filter(opt => opt !== id) : [...opts, id]
+    );
+  };
 
   return (
-    <div className="container">
-      <div className="header-small">
-        <div className="logo-with-text" onClick={goToHome}>
-          <img src={logoImage} alt="SABER Logo" className="logo-image" />
-          <div className="logo-text">SABER</div>
-        </div>
-        <div className="menu-icon-small">☰</div>
-      </div>
+      <div className="container">
+        <header className="header-small">
+          <div className="logo-with-text" onClick={() => navigate('/')}>
+            <img src={logoImage} alt="logo" className="logo-image" />
+            <div className="logo-text">SABER</div>
+          </div>
+          <div className="menu-icon-small">☰</div>
+        </header>
 
-      <div className="progress-bar-container">
-        <div className="progress-bar-17"></div>
-      </div>
+        <div className="progress-bar-container"><div className="progress-bar-17"></div></div>
 
-      <div className="buyer-info">
-        <div className="profile-placeholder"></div>
-        <div className="buyer-text">
-          <div className="buyer-title">구매자</div>
-          <div className="buyer-subtitle">구매자용 중고거래 실물인증 서비스</div>
-        </div>
-      </div>
+        <section className="buyer-info">
+          <div className="profile-placeholder"></div>
+          <div className="buyer-text">
+            <div className="buyer-title">구매자</div>
+            <div className="buyer-subtitle">구매자용 중고거래 실물인증 서비스</div>
+          </div>
+        </section>
 
-      <div className="verification-method-section">
-        <label className="verification-method-label">인증 제한 시간 설정</label>
-        <div className="verification-button-container">
-          {['3분', '5분', '7분', '10분', '기타'].map((time) => (
-            <button
-              key={time}
-              className={`time-button ${selectedTime === time ? 'selected' : ''}`}
-              onClick={() => handleTimeSelect(time)}
-            >
-              {time}
-            </button>
-          ))}
-        </div>
-      </div>
+        <section className="verification-method-section">
+          <label className="verification-method-label">인증 제한 시간 설정</label>
+          <div className="verification-button-container">
+            {TIME_OPTIONS.map(time => (
+                <button key={time} className={`time-button ${selectedTime === time ? 'selected' : ''}`} onClick={() => setSelectedTime(selectedTime === time ? null : time)}>{time}분</button>
+            ))}
+          </div>
+        </section>
 
-      <div className="additional-requirement-section">
-        <label className="additional-requirement-label">개별 인증 요구사항 추가</label>
-        <label className="additional-requirement-label">
-          카테고리별 기본 인증사항을 제외한 추가 인증 요구사항을 입력하세요.
-        </label>
-        <input
-          className="additional-requirement-input"
-          type="text"
-          placeholder="예: 물품 전체 사진, 하자 부분 촬영"
-          value={initialAdditionalRequirement}
-          onChange={handleInitialAdditionalRequirementChange}
-        />
-        {dynamicRequirements.map((req, index) => (
-          <div key={req.id} className="dynamic-requirement-input-wrapper">
-            <input
+        <section className="additional-requirement-section">
+          <label className="additional-requirement-label">개별 인증 요구사항 추가</label>
+          <input
               className="additional-requirement-input"
               type="text"
-              placeholder={`추가 요구사항 ${index + 1}`}
-              value={req.value}
-              onChange={(e) => handleDynamicRequirementChange(req.id, e)}
-            />
-            <button className="remove-requirement-button" onClick={() => handleRemoveRequirement(req.id)}>
-              X
-            </button>
-          </div>
-        ))}
+              placeholder="예: 포스트잇에 닉네임 적어서 같이 촬영해주세요."
+              value={initialRequirement}
+              onChange={(e) => setInitialRequirement(e.target.value)}
+          />
+          {requirements.map((req, index) => (
+              <div key={req.id} className="dynamic-requirement-input-wrapper">
+                <input
+                    className="additional-requirement-input"
+                    type="text"
+                    placeholder={`추가 요구사항 ${index + 1}`}
+                    value={req.value}
+                    onChange={(e) => handleRequirementChange(req.id, e.target.value)}
+                />
+                <button className="remove-requirement-button" onClick={() => setRequirements(reqs => reqs.filter(r => r.id !== req.id))}>X</button>
+              </div>
+          ))}
+          <button className="add-button" onClick={() => setRequirements(reqs => [...reqs, { id: Date.now(), value: '' }])}>+ 추가</button>
+        </section>
 
-        <button className="add-button" onClick={handleAddRequirement}>+ 추가</button>
-      </div>
+        <section className="verification-method-section">
+          <label className="verification-method-label">기본 인증 방식 선택</label>
 
-      <div className="verification-method-section">
-        <label className="verification-method-label">인증 방식</label>
-          <div className="verification-button-container">
-            {['사진 촬영', '동영상 촬영'].map((method) => (
-              <button
-                key={method}
-                className={`${selectedMethod === method ? 'selected' : ''}`}
-                onClick={() => handleMethodSelect(method)}
-              >
-                {method}
-              </button>
+          <div className="recommend-container">
+            <span>✅ 이런 인증 방법을 추천해요!</span>
+            {recommendedOptions.map((recommends, idx) => (
+                <p key={idx}>- {recommends.verificationContent}</p>
             ))}
           </div>
 
-          <ul className="selected-method-display">
-            {selectedMethod && (
-              <li>{selectedMethod}</li>
-            )}
-          </ul>
-      </div>
+          <div className="verification-option-container">
+            {defaultOptions.map(opt => (
+                <button
+                    key={opt.id}
+                    className={`verification-option-button ${selectedOptions.includes(opt.id) ? 'selected' : ''}`}
+                    onClick={() => toggleOption(opt.id)}
+                >
+                  {opt.verificationContent}
+                </button>
+            ))}
+          </div>
 
-      {/* Update the disabled prop for the "다음" button */}
-      <button className="next-button" disabled={isNextButtonDisabled} onClick={() => {
-        handleSubmit();
-        goToPermissionScreen();
-      }}>다음</button>
-    </div>
+          {selectedOptions.length > 0 && (
+              <ul className="selected-method-display">
+                {defaultOptions.filter(opt => selectedOptions.includes(opt.id)).map(opt => (
+                    <li key={opt.id}>{opt.verificationContent}</li>
+                ))}
+              </ul>
+          )}
+        </section>
+
+        <button className="next-button" disabled={isNextDisabled} onClick={handleSubmit}>다음</button>
+      </div>
   );
 }

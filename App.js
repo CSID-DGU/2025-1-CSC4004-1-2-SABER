@@ -26,37 +26,40 @@ import BuyerVerificationCompleteScreen from './pages/BuyerVerificationCompleteSc
 import ResultScreen from './pages/ResultScreen'
 import CaptureWarningScreen from './pages/CaptureWarningScreen';
 import EndScreen from './pages/EndScreen';
+import {TimerProvider} from "./src/contexts/TimerContext";
 
 function App() {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<StartScreen />} />
-        <Route path="/precaution" element={<PrecautionScreen />} />
-        <Route path="/category" element={<CategoryScreen />} />
-        <Route path="/verification-setting" element={<VerificationSettingScreen />} />
-        <Route path="/permission" element={<PermissionScreen />} />
-        <Route path="/verification-link-generated" element={<VerificationLinkGeneratedScreen />} />
-        <Route path="/waiting" element={<WaitingScreen />} />
+      <TimerProvider>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<StartScreen/>}/>
+            <Route path="/precaution" element={<PrecautionScreen/>}/>
+            <Route path="/category" element={<CategoryScreen/>}/>
+            <Route path="/verification-setting" element={<VerificationSettingScreen/>}/>
+            <Route path="/permission" element={<PermissionScreen/>}/>
+            <Route path="/verification-link-generated" element={<VerificationLinkGeneratedScreen/>}/>
+            <Route path="/waiting" element={<WaitingScreen/>}/>
 
-        <Route path="/seller/start" element={<SellerStartScreen />} />
-        <Route path="/seller/guide" element={<SellerUsageGuideScreen />} />
-        <Route path="/seller/permission" element={<SellerPermissionScreen />} />
-        <Route path="/seller/denied" element={<SellerPermissionDeniedScreen />} />
-        <Route path="/seller/verification-start" element={<SellerVerificationStartScreen />} />
-        <Route path="/seller/camera" element={<SellerCameraScreen />} />
-        <Route path="/seller/verification-complete" element={<SellerVerificationCompleteScreen />} />
-        <Route path="/seller/verification-failed" element={<SellerVerificationFailedScreen />} />
-        <Route path="/seller/submit" element={<SellerVerificationSubmitScreen />} />
-        <Route path="/seller/verification-additional-info" element={<SellerVerificationAdditionalInfoScreen />} />
-        <Route path="/seller/verification-success" element={<SellerVerificationSuccessScreen />} />
+            <Route path="/seller/start" element={<SellerStartScreen/>}/>
+            <Route path="/seller/guide" element={<SellerUsageGuideScreen/>}/>
+            <Route path="/seller/permission" element={<SellerPermissionScreen/>}/>
+            <Route path="/seller/denied" element={<SellerPermissionDeniedScreen/>}/>
+            <Route path="/seller/verification-start" element={<SellerVerificationStartScreen />} />
+            <Route path="/seller/camera" element={<SellerCameraScreen/>}/>
+            <Route path="/seller/verification-complete" element={<SellerVerificationCompleteScreen/>}/>
+            <Route path="/seller/verification-failed" element={<SellerVerificationFailedScreen/>}/>
+            <Route path="/seller/submit" element={<SellerVerificationSubmitScreen/>}/>
+            <Route path="/seller/verification-additional-info" element={<SellerVerificationAdditionalInfoScreen/>}/>
+            <Route path="/seller/verification-success" element={<SellerVerificationSuccessScreen/>}/>
 
-        <Route path="/buyer/complete" element={<BuyerVerificationCompleteScreen />} />
-        <Route path="/result" element={<ResultScreen />} />
-        <Route path="/capture-warning" element={<CaptureWarningScreen />} />
-        <Route path="/end" element={<EndScreen />} />
-      </Routes>
-    </div>
+            <Route path="/buyer/complete" element={<BuyerVerificationCompleteScreen/>}/>
+            <Route path="/result" element={<ResultScreen/>}/>
+            <Route path="/capture-warning" element={<CaptureWarningScreen/>}/>
+            <Route path="/end" element={<EndScreen/>}/>
+          </Routes>
+        </div>
+      </TimerProvider>
   );
 }
 
