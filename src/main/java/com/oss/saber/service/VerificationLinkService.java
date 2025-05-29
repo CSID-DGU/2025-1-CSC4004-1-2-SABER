@@ -4,6 +4,7 @@ import com.oss.saber.config.TokenProvider;
 import com.oss.saber.domain.*;
 import com.oss.saber.dto.*;
 import com.oss.saber.repository.CategoryRepository;
+import com.oss.saber.repository.DefaultVerificationRepository;
 import com.oss.saber.repository.VerificationLinkRepository;
 import com.oss.saber.repository.VerificationRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +24,7 @@ public class VerificationLinkService {
     private final VerificationLinkRepository verificationLinkRepository;
     private final CategoryRepository categoryRepository;
     private final TokenProvider tokenProvider;
+    private final DefaultVerificationRepository defaultVerificationRepository;
 
     public VerificationLink createLink(CategorySettingRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -38,49 +40,36 @@ public class VerificationLinkService {
                 .expiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
-        for (DefaultVerification defaultVerification : category.getDefaultVerifications()) {
-            Verification verification = Verification.builder()
-                    .label(defaultVerification.getContent())
-                    .result(PENDING)
-                    .build();
-            link.addVerification(verification);
-        }
-
-        return verificationLinkRepository.save(link); // 연관된 Verification도 함께 저장
+        return verificationLinkRepository.save(link);
     }
 
     public VerificationLink settingVerificationLink(Long verificationLinkId, VerificationLinkSettingRequest request) {
         VerificationLink verificationLink = verificationLinkRepository.findById(verificationLinkId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 인증 링크가 존재하지 않습니다."));
 
-        verificationLink.setTerminatedAt(LocalDateTime.now().plusMinutes(request.getLimitedMinutes()));
-        verificationLink.setRequirementText(request.getCustomRequests());
+        if (request.getLimitedMinutes() != null) {
+            verificationLink.setTerminatedAt(LocalDateTime.now().plusMinutes(request.getLimitedMinutes()));
+        }
 
-        // 인증 방식 설정
-        List<Integer> customOptions = request.getVerificationMethods();
-        for (Integer methodId : customOptions) {
-            switch (methodId) {
-                case 1: // 사진
-                    verificationLink.addVerification(
-                            Verification.builder()
-                                    .label("사진 촬영")
-                                    .result(VerificationResult.PENDING)
-                                    .build()
-                    );
-                    break;
-                case 2: // 동영상
-                    verificationLink.addVerification(
-                            Verification.builder()
-                                    .label("동영상 촬영")
-                                    .result(VerificationResult.PENDING)
-                                    .build()
-                    );
-                    break;
-                // 필요 시 추가 case 가능
-                default:
-                    throw new IllegalArgumentException("지원하지 않는 인증 방식입니다: " + methodId);
+        if (request.getCustomRequests() != null) {
+            verificationLink.setRequirementText(request.getCustomRequests());
+        }
+
+        List<Long> selectedMethodIds = request.getVerificationMethods();
+        if (selectedMethodIds != null && !selectedMethodIds.isEmpty()) {
+            List<DefaultVerification> selectedVerifications = defaultVerificationRepository.findAllById(selectedMethodIds);
+
+            for (DefaultVerification selected : selectedVerifications) {
+                Verification verification = Verification.builder()
+                        .label(selected.getContent())
+                        .result(VerificationResult.PENDING)
+                        .verificationLink(verificationLink)
+                        .build();
+
+                verificationLink.addVerification(verification);
             }
         }
+
         return verificationLinkRepository.save(verificationLink);
     }
 

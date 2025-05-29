@@ -10,5 +10,6 @@ import java.util.List;
 @Setter
 @Builder
 public class DefaultVerificationResponse {
+    private Long id;
     private String verificationContent;
 }
