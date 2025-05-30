@@ -1,89 +1,66 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 50px 20px;
-  background-color: #f7f7f7;
-  height: 100vh;
-  box-sizing: border-box;
-`;
+export default function SellerStartScreen() {
+    const [searchParams] = useSearchParams();
+    const [token, setToken] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-`;
+    function getVisitorKey() {
+        let key = localStorage.getItem('visitorKey');
+        if (!key) {
+            key = crypto.randomUUID();
+            localStorage.setItem('visitorKey', key);
+        }
+        return key;
+    }
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 40px;
-`;
+    const startVerification = async (tokenToUse) => {
+        if (!tokenToUse) {
+            setError('토큰이 없습니다');
+            return;
+        }
+        setError('');
+        setLoading(true);
+        try {
+            const visitorKey = getVisitorKey();
+            const res = await axios.get(`http://localhost:8080/api/saber`, {
+                params: {
+                    token: tokenToUse,
+                    visitorKey: visitorKey,
+                },
+                withCredentials: true,
+            });
 
-const Logo = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-`;
+            // 세션을 다음 페이지에서 사용할 수 있도록 저장
+            localStorage.setItem('sessionId', res.data.id);
 
-const MenuIcon = styled.div`
-  font-size: 24px;
-  color: #666;
-`;
+            // 자동 이동
+            navigate('/seller/permission');
+        } catch (e) {
+            setError('인증 시작 실패');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-const ButtonGroup = styled.div`
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+    useEffect(() => {
+        const tokenFromUrl = searchParams.get('token');
+        if (tokenFromUrl) {
+            setToken(tokenFromUrl);
+        }
+    }, [searchParams]);
 
-const Button = styled.button`
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 12px 24px;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 16px;
-
-  &:hover {
-    background-color: #eee;
-  }
-`;
-
-function SellerStartScreen() {
-  const navigate = useNavigate();
-
-  const goToPermission = () => {
-    navigate('/seller/permission');
-  };
-
-  const goToGuide = () => {
-    navigate('/seller/guide');
-  };
-
-  return (
-    <Container>
-      <Header>
-        <Logo>SABER</Logo>
-        <MenuIcon>&#9776;</MenuIcon>
-      </Header>
-      <Title>실시간 거래 인증 서비스 SABER</Title>
-      <ButtonGroup>
-        <Button onClick={goToGuide}>서비스 설명 및 사용법</Button>
-        <Button onClick={goToPermission}>판매 인증 시작</Button>
-      </ButtonGroup>
-    </Container>
-  );
+    return (
+        <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
+            <h2>판매자 인증 시작</h2>
+            <button onClick={() => startVerification(token)} disabled={loading || !token}>
+                인증 시작
+            </button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+        </div>
+    );
 }
-
-export default SellerStartScreen;

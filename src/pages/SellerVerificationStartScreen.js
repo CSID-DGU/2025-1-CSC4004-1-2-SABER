@@ -1,138 +1,34 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 50px 20px;
-  background-color: #f7f7f7;
-  height: 100vh;
-  box-sizing: border-box;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 10px;
-`;
-
-const Logo = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-`;
-
-const MenuIcon = styled.div`
-  font-size: 20px;
-  color: #666;
-`;
-
-const ProgressBarContainer = styled.div`
-  width: 100%;
-  height: 8px;
-  background-color: #ddd;
-  margin: 10px 0 20px;
-  border-radius: 4px;
-`;
-
-const ProgressBar = styled.div`
-  height: 100%;
-  background-color: #4caf50;
-  width: 10%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-`;
-
-const SellerInfo = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 30px 0 10px;
-  width: 100%;
-`;
-
-const ProfilePlaceholder = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #ddd;
-  margin-right: 10px;
-`;
-
-const SellerText = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const SellerTitle = styled.div`
-  font-weight: bold;
-  font-size: 15px;
-`;
-
-const SellerSubtitle = styled.div`
-  font-size: 12px;
-  color: #999;
-`;
-
-const TimerText = styled.p`
-  font-size: 18px;
-  color: red;
-  margin-top: 10px;
-`;
-
-const PhotoVideoNotice = styled.div`
-  width: 100%;
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  text-align: center;
-  font-size: 14px;
-  color: #333;
-`;
-
-const NoticeContainer = styled.div`
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 100%;
-`;
-
-const NoticeTitle = styled.h4`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-`;
-
-const NoticeText = styled.p`
-  font-size: 14px;
-  color: #666;
-`;
-
-const Button = styled.button`
-  background-color: #333;
-  color: #fff;
-  padding: 12px 30px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 40px;
-`;
+import '../css/Sellers.css';
+import logoImage from '../assets/logo.png';
+import { useTimer } from '../contexts/TimerContext'; // useTimer 훅 임포트
 
 function SellerVerificationStartScreen() {
   const navigate = useNavigate();
+  const { timeLeft, isTimerRunning, resetTimer, formatTime } = useTimer(); // Context에서 값과 함수 가져오기
+
+  useEffect(() => {
+    if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
+        resetTimer();
+    }
+  }, [resetTimer]);
+
+
+  // 시간이 0이 되면 자동으로 실패 화면으로 이동
+  useEffect(() => {
+    if (!isTimerRunning && timeLeft <= 0) {
+      navigate('/seller/verification-failed');
+    }
+  }, [isTimerRunning, timeLeft, navigate]);
 
   const handleStart = () => {
-    navigate('/seller/camera');
+    if (timeLeft > 0) { // 시간이 남아 있을 때만 페이지 이동
+      navigate('/seller/camera'); // 다음 페이지로 이동
+    } else {
+      alert('인증 시간이 초과되었습니다.'); // 시간이 초과되었을 때 알림
+      navigate('/seller/verification-failed'); // 시간이 초과되었으면 실패 화면으로 이동
+    }
   };
 
   const goToStart = () => {
@@ -140,33 +36,33 @@ function SellerVerificationStartScreen() {
   };
 
   return (
-    <Container>
-      <Header>
-        <Logo onClick={goToStart}>SABER</Logo>
-        <MenuIcon>☰</MenuIcon>
-      </Header>
+    <div className="container">
+      <div className="header">
+        <div className="logo-with-text" onClick={goToStart}>
+          <img src={logoImage} alt="SABER Logo" className="logo-image" />
+          <div className="logo-text">SABER</div>
+        </div>
+        <div className="menuIcon">☰</div>
+      </div>
 
-      <ProgressBarContainer>
-        <ProgressBar />
-      </ProgressBarContainer>
+      <div className="sellerInfo">
+        <div className="profilePlaceholder" />
+        <div className="sellerText">
+          <div className="sellerTitle">판매자</div>
+          <div className="sellerSubtitle">판매자용 중고거래 실물인증 서비스</div>
+        </div>
+      </div>
 
-      <SellerInfo>
-        <ProfilePlaceholder />
-        <SellerText>
-          <SellerTitle>판매자</SellerTitle>
-          <SellerSubtitle>판매자용 중고거래 실물인증 서비스</SellerSubtitle>
-        </SellerText>
-      </SellerInfo>
+      <p className="timerText">인증 제한시간: {formatTime(timeLeft)}</p>
+      {timeLeft <= 0 && <p className="timeUpMessage" style={{ color: 'red', fontWeight: 'bold' }}>시간이 초과되었습니다!</p>}
 
-      <TimerText>인증 제한시간: 10:00</TimerText>
-
-      <PhotoVideoNotice>
+      <div className="photoVideoNotice">
         3종류의 사진촬영 및 2종류의 영상인증이 필요합니다.
-      </PhotoVideoNotice>
+      </div>
 
-      <NoticeContainer>
-        <NoticeTitle>유의사항</NoticeTitle>
-        <NoticeText>
+      <div className="noticeContainer">
+        <h4 className="noticeTitle">유의사항</h4>
+        <p className="noticeText">
           인증 시작 후 중단시 인증이 무효화됩니다.
           <br />
           백그라운드로 이동 시 인증이 중단됩니다.
@@ -174,11 +70,13 @@ function SellerVerificationStartScreen() {
           촬영은 1회만 가능합니다.
           <br />
           제한시간 내에 인증이 완료되어야 합니다.
-        </NoticeText>
-      </NoticeContainer>
+        </p>
+      </div>
 
-      <Button onClick={handleStart}>인증 시작</Button>
-    </Container>
+      <button className="nextButton" onClick={handleStart} disabled={timeLeft <= 0}>
+        인증 시작
+      </button>
+    </div>
   );
 }
 

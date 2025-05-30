@@ -1,85 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 20px;
-  background-color: #f7f7f7;
-  height: 100vh;
-  box-sizing: border-box;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 10px;
-`;
-
-const Logo = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-`;
-
-const MenuIcon = styled.div`
-  font-size: 20px;
-  color: #666;
-`;
-
-const SellerInfo = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin: 20px 0 30px;
-`;
-
-const ProfilePlaceholder = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #ddd;
-  margin-right: 10px;
-`;
-
-const SellerText = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const SellerTitle = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-`;
-
-const SellerSubtitle = styled.div`
-  font-size: 12px;
-  color: #666;
-`;
-
-const Message = styled.h2`
-  font-size: 18px;
-  color: #5561c0;
-  margin: 40px 0 10px;
-  text-align: center;
-`;
-
-const MainButton = styled.button`
-  background-color: #000;
-  color: #fff;
-  padding: 14px;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  width: 100%;
-  cursor: pointer;
-  margin-top: 60px;
-`;
+import '../css/Sellers.css';
+import logoImage from '../assets/logo.png';
 
 function SellerVerificationSuccessScreen() {
   const navigate = useNavigate();
@@ -89,24 +11,27 @@ function SellerVerificationSuccessScreen() {
   };
 
   return (
-    <Container>
-      <Header>
-        <Logo>SABER</Logo>
-        <MenuIcon>☰</MenuIcon>
-      </Header>
+    <div className="container">
+      <div className="header">
+        <div className="logo-with-text">
+          <img src={logoImage} alt="SABER Logo" className="logo-image" />
+          <div className="logo-text">SABER</div>
+        </div>
+        <div className="menuIcon">☰</div>
+      </div>
 
-      <SellerInfo>
-        <ProfilePlaceholder />
-        <SellerText>
-          <SellerTitle>판매자</SellerTitle>
-          <SellerSubtitle>판매자용 중고거래 실물인증 서비스</SellerSubtitle>
-        </SellerText>
-      </SellerInfo>
+      <div className="sellerInfo">
+        <div className="profilePlaceholder" />
+        <div className="sellerText">
+          <div className="sellerTitle">판매자</div>
+          <div className="sellerSubtitle">판매자용 중고거래 실물인증 서비스</div>
+        </div>
+      </div>
 
-      <Message>인증이 완료되었습니다</Message>
+      <h2 className="message">인증에 성공하였습니다!</h2>
 
-      <MainButton onClick={handleGoHome}>메인 화면</MainButton>
-    </Container>
+      <button className="mainButton" onClick={handleGoHome}>메인 화면</button>
+    </div>
   );
 }
 

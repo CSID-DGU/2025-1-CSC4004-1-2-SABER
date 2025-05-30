@@ -1,40 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  height: 100vh;
-  background-color: #000;
-  padding: 20px;
-  box-sizing: border-box;
-`;
-
-const Video = styled.video`
-  width: 100%;
-  max-height: 80vh;
-  border-radius: 10px;
-  object-fit: cover;
-`;
-
-const CaptureButton = styled.button`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 4px solid #fff;
-  background-color: transparent;
-  margin-top: 20px;
-  cursor: pointer;
-`;
-
-const Label = styled.div`
-  color: #fff;
-  font-size: 16px;
-  margin-top: 10px;
-`;
+import '../css/Sellers.css';
 
 function SellerCameraScreen() {
   const videoRef = useRef(null);
@@ -42,25 +8,62 @@ function SellerCameraScreen() {
   const navigate = useNavigate();
   const [stream, setStream] = useState(null);
 
+  // 1. 카메라 접근 및 스트림 관리 useEffect
   useEffect(() => {
     const startCamera = async () => {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoRef.current.srcObject = mediaStream;
+        if (videoRef.current) { // videoRef.current가 null이 아닐 때만 srcObject 설정
+          videoRef.current.srcObject = mediaStream;
+        }
         setStream(mediaStream);
       } catch (err) {
         console.error('카메라 접근 오류:', err);
+        // 사용자에게 카메라 접근이 거부되었음을 알리거나, 대체 UI를 제공할 수 있습니다.
+        // 예: alert('카메라 접근이 거부되었습니다. 설정을 확인해주세요.');
+        // navigate('/permission-denied'); // 권한 거부 시 특정 페이지로 이동
       }
     };
 
     startCamera();
 
+    // 클린업 함수: 컴포넌트 언마운트 시 카메라 스트림 중지
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [stream]);
+  }, [stream]); // stream이 변경될 때만 다시 실행
+
+  // 2. 보안 위험 감지 useEffect (추가된 부분)
+  useEffect(() => {
+    const handleSecurityRisk = () => {
+      // 카메라 스트림이 활성화되어 있다면 중지
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        setStream(null); // 스트림 상태 초기화
+      }
+      navigate('/capture-warning'); // 경고 페이지로 이동
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        handleSecurityRisk();
+      }
+    };
+
+    const handleBlur = () => {
+      handleSecurityRisk();
+    };
+
+    window.addEventListener('blur', handleBlur);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('blur', handleBlur);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [navigate, stream]); // navigate와 stream을 의존성 배열에 추가
 
   const handleCapture = () => {
     const video = videoRef.current;
@@ -72,17 +75,27 @@ function SellerCameraScreen() {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const image = canvas.toDataURL('image/png');
       localStorage.setItem('capturedImage', image);
+
+      // 캡처 후 스트림 중지 (선택 사항)
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        setStream(null); // 스트림 상태 초기화
+      }
+
       navigate('/seller/verification-complete');
     }
   };
 
   return (
-    <Container>
-      <Video ref={videoRef} autoPlay playsInline />
+    <div className="captureContainer">
+      {/* 카메라 스트림이 없을 때 로딩 메시지 또는 에러 메시지 표시 가능 */}
+      {!stream && <div className="cameraLoading">카메라 로딩 중... 또는 카메라 접근을 허용해주세요.</div>}
+      <video ref={videoRef} autoPlay playsInline className="video" />
       <canvas ref={canvasRef} style={{ display: 'none' }} />
-      <CaptureButton onClick={handleCapture} />
-      <Label>사진 촬영</Label>
-    </Container>
+      {/* 스트림이 활성화되었을 때만 캡처 버튼 활성화 */}
+      <button onClick={handleCapture} className="captureButton" disabled={!stream} />
+      <div className="cameraLabel">사진 촬영</div>
+    </div>
   );
 }
 

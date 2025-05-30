@@ -1,0 +1,452 @@
+/* Layout containers */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background-color: #f7f7f7;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.captureContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  background-color: #000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.warningContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background-color: #fff8f0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Header styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.menuIcon {
+  font-size: 20px;
+  color: #666;
+}
+
+/* Progress bar */
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  margin: 10px 0 20px;
+  border-radius: 4px;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #4caf50;
+  width: 10%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Seller info section */
+.sellerInfo {
+  display: flex;
+  align-items: center;
+  margin: 30px 0 10px;
+  width: 100%;
+}
+
+.profilePlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+}
+
+.sellerText {
+  display: flex;
+  flex-direction: column;
+}
+
+.sellerTitle {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.sellerSubtitle {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Titles and text */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.message {
+  font-size: 18px;
+  color: #5561c0;
+  margin: 40px 0 10px;
+  text-align: center;
+}
+
+.description {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.subTitle {
+  font-size: 14px;
+  color: #666;
+  align-self: flex-start;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-start;
+  margin: 10px 0 5px;
+}
+
+/* Timing elements */
+.timerText {
+  font-size: 18px;
+  color: red;
+  margin-top: 10px;
+}
+
+.timerBox {
+  background-color: #eee;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* Notice containers */
+.noticeContainer {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.noticeTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.noticeText {
+  font-size: 14px;
+  color: #666;
+}
+
+.photoVideoNotice {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.warningIcon {
+  font-size: 60px;
+  margin-top: 80px;
+  color: #ff9800;
+}
+
+/* Status display */
+.statusBox {
+  width: 100%;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.emoji {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.certificationBox {
+  width: 100%;
+  background-color: #f4f4f4;
+  padding: 16px;
+  border-radius: 10px;
+  margin: 20px 0 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Form elements */
+.input {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: none;
+  margin-bottom: 30px;
+}
+
+.input::placeholder {
+  color: #aaa;
+}
+
+.buttonGroup {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.permissionButtonGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.permissionItem {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 16px;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* List styles */
+.stepList {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+/* Camera elements */
+.video {
+  width: 100%;
+  max-height: 80vh;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* Button styles */
+
+.mainButton {
+  background-color: #000;
+  color: #fff;
+  padding: 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+.nextButton {
+  margin-top: auto;
+  background-color: #333;
+  color: #fff;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nextButton:disabled {
+  opacity: 0.5;
+}
+
+.nextButtonOutline {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #aaa;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 40px;
+}
+
+.confirmButton {
+  margin-top: 40px;
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #666;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.backButton {
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #666;
+  padding: 12px 30px;
+  border-radius: 24px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.captureButton {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background-color: transparent;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.captureScreenButton {
+  background-color: #000;
+  color: #fff;
+  width: 100%;
+  padding: 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.permissionButton {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.permissionButtonSelected {
+  background-color: #a0a9b4;
+}
+
+.permissionButtonUnselected {
+  background-color: #fff;
+}
+
+/* Camera label */
+.cameraLabel {
+  color: #fff;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* 이미지 로고 스타일링 */
+.logo-with-text {
+  display: flex; /* Flexbox를 사용하여 이미지와 텍스트를 가로로 배열 */
+  align-items: center; /* 세로 중앙 정렬 */
+  cursor: pointer;
+  gap: 8px; /* 이미지와 텍스트 사이 간격 */
+  /* 필요에 따라 패딩이나 마진 추가 */
+}
+
+/* 이미지 로고 스타일링 (로고와 텍스트가 함께 있을 때) */
+.logo-with-text .logo-image {
+  height: 25px; /* 로고 이미지의 높이를 조절 */
+  width: auto;  /* 가로세로 비율 유지 */
+}
+
+/* 로고 텍스트 스타일링 (로고와 텍스트가 함께 있을 때) */
+.logo-with-text .logo-text {
+  font-size: 20px; /* 텍스트 크기 조절 */
+  font-weight: bold;
+  color: #2D4A69; /* 텍스트 색상 조절 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 */
+}
+
+.timerText {
+  font-size: 24px; /* 타이머 폰트 크기 */
+  font-weight: bold;
+  color: #333; /* 타이머 색상 */
+  margin-bottom: 20px; /* 아래 여백 */
+  text-align: center;
+}
+
+.timeUpMessage {
+  font-size: 16px;
+  color: red;
+  font-weight: bold;
+  margin-top: -10px; /* 타이머 텍스트와 겹치지 않게 */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* nextButton이 disabled 상태일 때 스타일 */
+.nextButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* 완료 버튼 스타일 */
+.doneButton {
+  background-color: #2d4a69;
+  color: #f2f2f2;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  width: auto; /* 내용에 따라 너비 조절 */
+  min-width: 120px; /* 최소 너비 설정 (선택 사항) */
+  box-sizing: border-box;
+  align-self: flex-end; /* 이 버튼이 바로 부모 .container의 자식이라면 사용 */
+}
+
+.doneButton:hover {
+  background-color: #1f2e3d; /* 호버 시 색상 변경 */
+}
+
+/* 완료 버튼 비활성화 시 스타일 (useTimer의 disabled 상태와 연결) */
+.doneButton:disabled {
+  background-color: #ccc; /* 회색 배경 */
+  cursor: not-allowed; /* 사용 불가 커서 */
+  opacity: 0.7; /* 약간 투명하게 */
+}

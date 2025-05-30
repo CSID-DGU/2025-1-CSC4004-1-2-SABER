@@ -1,0 +1,842 @@
+/* General container for all screens */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background-color: #f7f7f7;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Start screen specific container with more padding */
+.start-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+  background-color: #f7f7f7;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Header with logo and menu */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Header with smaller margin */
+.header-small {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Header with medium margin */
+.header-medium {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Header with larger margin */
+.header-large {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 60px;
+}
+
+/* Menu icon styling */
+.menu-icon {
+  font-size: 24px;
+  color: #666;
+}
+
+/* Smaller menu icon */
+.menu-icon-small {
+  font-size: 20px;
+  color: #666;
+}
+
+/* Main title styling */
+.title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Medium title */
+.title-medium {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Smaller title */
+.title-small {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0;
+  color: #333;
+  align-self: flex-start;
+}
+
+/* Subtitle styling */
+.subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Smaller subtitle */
+.subtitle-small {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Primary button styling */
+.button {
+  background-color: #2d4a69;
+  color: #f2f2f2;
+  border: 1px solid #d0c4de;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 30px 0;
+}
+
+.button:hover {
+  background-color: #1f2e3d;
+}
+
+/* Next button positioned at the bottom right */
+.next-button {
+  background-color: #2d4a69;
+  color: #f2f2f2;
+  border: 1px solid #d0c4de;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button with wider padding */
+.button-wide {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 15px 40px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button-wide:hover {
+  background-color: #eee;
+}
+
+/* Image placeholder styling */
+.image-placeholder {
+  background-color: #ddd;
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 20px;
+}
+
+/* Media box for photos/videos */
+.media-box {
+  width: 100%;
+  height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  margin: 10px 0 20px;
+  border-radius: 4px;
+}
+
+/* Progress bar */
+.progress-bar-17 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 17%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-33 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 33%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-50 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 50%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-67 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 67%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-83 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 83%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-bar-100 {
+  height: 100%;
+  background-color: #1f2e3d;
+  width: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Buyer information section */
+.buyer-info {
+  display: flex;
+  align-items: center;
+  margin: 30px 0 10px;
+  width: 100%;
+}
+
+/* Profile placeholder */
+.profile-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+}
+
+/* Buyer text container */
+.buyer-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Buyer title */
+.buyer-title {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* Buyer subtitle */
+.buyer-subtitle {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Notice text styling */
+.notice-text {
+  color: #555;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 40px;
+  white-space: pre-line;
+}
+
+/* Category section */
+.category-section {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+/* Category label */
+.category-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Category select dropdown */
+.category-select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+/* Category option */
+.category-option {
+  font-size: 14px;
+}
+
+/* Requirement box */
+.requirement-box {
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 50px;
+}
+
+/* Dots */
+.dots {
+  color: #ccc;
+  font-size: 20px;
+}
+
+/* Additional requirement section */
+.additional-requirement-section {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+/* Additional requirement label */
+.additional-requirement-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Additional requirement input */
+.additional-requirement-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.additional-requirement-input::placeholder {
+  color: #999;
+}
+
+/* Verification method section */
+.verification-method-section {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Verification method label */
+.verification-method-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Verification button container */
+.verification-button-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Verification button */
+.verification-button {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+.verification-button.selected {
+  background-color: #a0a9b4;
+}
+
+/* Add button */
+.add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #666;
+  background-color: #fff;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Requirement list section */
+.requirement-list-section {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Section title */
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+/* Permission item */
+.permission-item {
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+/* Permission label */
+.permission-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Permission text */
+.permission-text {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Permission buttons */
+.permission-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Permission button */
+.permission-button {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+.permission-button.granted {
+  background-color: #a0a9b4;
+}
+
+/* Permission description */
+.permission-description {
+  font-size: 12px;
+  color: #666;
+  text-align: left;
+}
+
+/* Link container */
+.link-container {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Link text */
+.link-text {
+  font-size: 14px;
+  color: #555;
+  margin-right: 10px;
+  overflow-wrap: break-word;
+}
+
+/* Copy icon */
+.copy-icon {
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+}
+
+/* Waiting button */
+.waiting-button {
+  background-color: #fff;
+  border: 1px solid #333;
+  color: #333;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: auto;
+}
+
+/* Message */
+.message {
+  font-size: 18px;
+  color: #5561c0;
+  margin: 40px 0 10px;
+  text-align: center;
+}
+
+/* Description */
+.description {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+}
+
+/* End screen message */
+.end-message {
+  color: #5561c0;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 60px 0 20px;
+  text-align: center;
+}
+
+/* End screen button */
+.end-button {
+  width: 100%;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #aaa;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+/* End screen black button */
+.end-button-black {
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+/* Slide indicator */
+.slide-indicator {
+  width: 40px;
+  height: 4px;
+  background-color: #ccc;
+  border-radius: 2px;
+  margin: 10px 0;
+}
+
+/* Requirement button */
+.requirement-button {
+  background-color: #eee;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+/* Feedback container */
+.feedback-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Feedback label */
+.feedback-label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Emoji buttons */
+.emoji-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* Emoji button */
+.emoji-button {
+  flex: 1;
+  padding: 12px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #333;
+  font-weight: normal;
+}
+
+.emoji-button.selected {
+  background-color: #dfe9ff;
+  border-color: #5561c0;
+  color: #5561c0;
+  font-weight: bold;
+}
+
+/* 이미지 로고 스타일링 */
+.logo-with-text {
+  display: flex; /* Flexbox를 사용하여 이미지와 텍스트를 가로로 배열 */
+  align-items: center; /* 세로 중앙 정렬 */
+  cursor: pointer;
+  gap: 8px; /* 이미지와 텍스트 사이 간격 */
+  /* 필요에 따라 패딩이나 마진 추가 */
+}
+
+/* 이미지 로고 스타일링 (로고와 텍스트가 함께 있을 때) */
+.logo-with-text .logo-image {
+  height: 25px; /* 로고 이미지의 높이를 조절 */
+  width: auto;  /* 가로세로 비율 유지 */
+}
+
+/* 로고 텍스트 스타일링 (로고와 텍스트가 함께 있을 때) */
+.logo-with-text .logo-text {
+  font-size: 20px; /* 텍스트 크기 조절 */
+  font-weight: bold;
+  color: #2D4A69; /* 텍스트 색상 조절 */
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 */
+}
+
+/* 동적으로 추가되는 입력 필드와 버튼을 감싸는 래퍼 */
+.dynamic-requirement-input-wrapper {
+  position: relative; /* 자식인 X 버튼의 absolute 위치 기준점 */
+  width: 100%; /* input 필드의 너비와 동일하게 설정 */
+  margin-bottom: 12px; /* input 필드 사이의 간격 유지 */
+  display: flex; /* 내부 요소 정렬을 위해 flexbox 사용 */
+  align-items: center; /* 세로 중앙 정렬 (X 버튼이 input과 같은 라인에 있을 경우) */
+}
+
+/* 동적으로 추가되는 입력 필드 (기존 additional-requirement-input 스타일 재활용) */
+.dynamic-requirement-input-wrapper .additional-requirement-input {
+  padding-right: 40px; /* X 버튼이 겹치지 않도록 오른쪽 패딩 추가 */
+  width: 100%; /* 래퍼 내에서 전체 너비를 차지 */
+}
+
+/* X 버튼 스타일 */
+.remove-requirement-button {
+  position: absolute; 
+  top: -8px;
+  left: -8px;
+  color: #3a3a3a;
+  border: none;
+  border-radius: 50%; /* 원형 버튼 */
+  width: 24px; /* 버튼 너비 */
+  height: 24px; /* 버튼 높이 */
+  font-size: 14px; /* X 글자 크기 */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10; /* 다른 요소 위에 나타나도록 z-index 설정 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 효과 (선택 사항) */
+}
+
+.remove-requirement-button:hover {
+  background-color: #c3c3c3; /* 호버 시 색상 변경 */
+}
+
+/* verification-method-section 관련 스타일 */
+.verification-method-section {
+  width: 100%;
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.verification-method-label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* time-button-container와 유사하게 적용 */
+.verification-button-container {
+  display: flex;
+  gap: 10px; /* 버튼 사이 간격 */
+  margin-bottom: 15px;
+  flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
+}
+
+/* .time-button 스타일을 재활용 */
+.verification-button-container button {
+  flex: 1; /* 버튼들이 컨테이너 내에서 공간을 균등하게 차지 */
+  min-width: 120px; /* 버튼의 최소 너비 */
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 */
+}
+
+/* .selected 클래스를 재활용 (선택된 버튼 스타일) */
+.verification-button-container button.selected {
+  background-color: #2D4A69; /* SABER 로고 색상 */
+  color: #fff;
+  border-color: #2D4A69;
+  box-shadow: 0 2px 5px rgba(45, 74, 105, 0.2);
+}
+
+/* 비활성화된 버튼 스타일 (기존 .time-button:disabled와 동일하게) */
+.verification-button-container button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* 버튼 호버 효과 (기존 .time-button:hover와 유사하게) */
+.verification-button-container button:not(:disabled):hover {
+  background-color: #e6e6e6;
+  border-color: #bbb;
+}
+
+.verification-button-container button.selected:not(:disabled):hover {
+  background-color: #243e5a; /* 선택된 버튼 호버 시 약간 더 어둡게 */
+}
+
+/* 선택된 방식 표시 (ul/li) 스타일 - 새로운 스타일 */
+.selected-method-display {
+  list-style: none; /* 기본 리스트 마커 제거 */
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #eee; /* 구분선 추가 */
+  padding-top: 15px;
+}
+
+.selected-method-display li {
+  font-size: 15px;
+  color: #444;
+  background-color: #f9f9f9;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: inline-block; /* 한 줄에 표시 */
+}
+
+.verification-option-button {
+  white-space: normal; /* 줄바꿈 허용 */
+  word-break: break-word; /* 단어가 길 경우 줄바꿈 */
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  min-height: 50px; /* 버튼 높이를 늘려서 줄바꿈 가능하게 */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  transition: background-color 0.3s;
+}
+
+.verification-option-button.selected {
+  background-color: #1f2e3d;
+  color: white;
+}
+
+.verification-option-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 두 개씩 */
+  gap: 10px;
+}
+
+.recommend-container {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  height: auto;
+  font-size: 14px;
+  margin-bottom: 13px;
+  flex-direction: column;
+}
+
+.recommend-container span {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.recommend-container p {
+  margin: 0;
+  padding-left: 10px;
+  line-height: 1.4;
+}
