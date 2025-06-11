@@ -230,11 +230,13 @@
   color: #aaa;
 }
 
-.buttonGroup {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.button-group {
+    display: flex;
+    flex-direction: column; /* 버튼들을 세로로 정렬 */
+    align-items: center;    /* 버튼들을 가로 중앙 정렬 */
+    width: 100%;            /* 부모 너비에 맞춤 */
+    max-width: 400px;       /* 버튼 그룹의 최대 너비 (조절 가능) */
+    gap: 15px;              /* 버튼들 사이의 간격 */
 }
 
 .permissionButtonGroup {
@@ -312,14 +314,16 @@
 }
 
 .confirmButton {
-  margin-top: 40px;
-  background-color: transparent;
-  border: 1px solid #aaa;
-  color: #666;
-  padding: 10px 24px;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #aaa;
+    color: #666;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block; /* 가로 중앙 정렬을 위해 명시적으로 block 지정 */
+    width: 100%; /* 부모 .button-group 너비에 맞춤 */
+    max-width: 200px; /* 버튼 자체의 최대 너비 (조절 가능) */
 }
 
 .backButton {
@@ -332,14 +336,26 @@
   cursor: pointer;
 }
 
-.captureButton {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 4px solid #fff;
+.cameraButton {
   background-color: transparent;
-  margin-top: 20px;
+  border: 1px solid #aaa;
+  color: #666;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 14px;
   cursor: pointer;
+  margin-top: 15px;
+}
+
+.captureButton {
+  background-color: #2d4a69;
+  border: 1px solid #aaa;
+  color: #f2f2f2;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 15px;
 }
 
 .captureScreenButton {
@@ -430,14 +446,14 @@
   background-color: #2d4a69;
   color: #f2f2f2;
   border: none;
-  padding: 15px 30px;
+  padding: 10px 20px;
   border-radius: 30px;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   width: auto; /* 내용에 따라 너비 조절 */
-  min-width: 120px; /* 최소 너비 설정 (선택 사항) */
   box-sizing: border-box;
   align-self: flex-end; /* 이 버튼이 바로 부모 .container의 자식이라면 사용 */
+  margin: 10px auto 0 auto;
 }
 
 .doneButton:hover {
@@ -456,4 +472,103 @@ ul {
   list-style: none;
   padding-left: 0;
   margin-left: 0;
+}
+
+.seller-start-button {
+    background-color: #2d4a69;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    color: #f2f2f2;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 15px 40px;
+    /* margin: 30px auto 0 auto; -> Flexbox가 정렬하므로 제거 또는 조정 */
+    /* display: block; -> Flexbox 내부에서는 필요 없음 */
+    cursor: pointer;
+    width: 100%; /* 부모 .button-group 너비에 맞춤 */
+    max-width: 200px; /* 버튼 자체의 최대 너비 (조절 가능) */
+}
+.seller-start-container {
+    display: flex;             /* Flexbox 사용 */
+    flex-direction: column;    /* 자식 요소들을 세로로 정렬 */
+    align-items: center;       /* 자식 요소들을 가로 중앙 정렬 */
+    justify-content: flex-start;   /* 자식 요소들을 세로 중앙 정렬 (필요시) */
+    min-height: 100vh;         /* 뷰포트 전체 높이를 차지하도록 설정 */
+    padding: 20px;
+    box-sizing: border-box;    /* 패딩이 너비에 포함되도록 */
+    padding-top: 100px;         /* 상단에 원하는 만큼 여백 추가 */
+}
+.seller-start-container .title {
+    /* 현재: margin-bottom: 30px; */
+    margin-bottom: 150px; /* 제목 아래 여백을 줄여 버튼을 위로 올림 */
+    margin-top: 0;       /* 기본 상단 마진을 제거 (선택 사항: 필요에 따라 조절) */
+    padding-top: 50px;   /* 또는 컨테이너의 상단 패딩을 조정 */
+    text-align: center;
+    color: #333;
+}
+
+.seller-camera-container {
+    display: flex;             /* Flexbox 사용 */
+    flex-direction: column;    /* 자식 요소들을 세로로 정렬 */
+    align-items: center;       /* 자식 요소들을 가로 중앙 정렬 */
+    justify-content: flex-start;   /* 자식 요소들을 세로 중앙 정렬 (필요시) */
+    min-height: 100vh;         /* 뷰포트 전체 높이를 차지하도록 설정 */
+    padding: 20px;
+    box-sizing: border-box;    /* 패딩이 너비에 포함되도록 */
+    padding-top: 5px;         /* 상단에 원하는 만큼 여백 추가 */
+}
+
+.seller-camera-container .title {
+    /* 현재: margin-bottom: 30px; */
+    margin-bottom: 15px; /* 제목 아래 여백을 줄여 버튼을 위로 올림 */
+    margin-top: 0;       /* 기본 상단 마진을 제거 (선택 사항: 필요에 따라 조절) */
+    padding-top: 50px;   /* 또는 컨테이너의 상단 패딩을 조정 */
+    text-align: center;
+    color: #333;
+}
+/* 모달 오버레이 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 컨테이너 */
+.modal-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 촬영된 사진 */
+.modal-image {
+    max-width: 100%;
+    max-height: 300px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.textBox {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  resize: vertical;
 }

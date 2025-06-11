@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import GlobalStyle from './styles/GlobalStyle'; // GlobalStyle 임포트
 import { TimerProvider } from './contexts/TimerContext'; // TimerProvider 임포트
 
@@ -16,7 +16,6 @@ import SellerStartScreen from './pages/SellerStartScreen';
 import SellerUsageGuideScreen from './pages/SellerUsageGuideScreen';
 import SellerPermissionScreen from './pages/SellerPermissionScreen';
 import SellerPermissionDeniedScreen from './pages/SellerPermissionDeniedScreen';
-import SellerVerificationStartScreen from './pages/SellerVerificationStartScreen';
 import SellerCameraScreen from './pages/SellerCameraScreen';
 import SellerVerificationCompleteScreen from './pages/SellerVerificationCompleteScreen';
 import SellerVerificationFailedScreen from './pages/SellerVerificationFailedScreen'; // 인증 실패 화면 추가
@@ -35,12 +34,27 @@ import SellerVerificationStart from "./pages/SellerVerificationStart";
 
 function App() {
   const [verificationId, setVerificationId] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
       fetch('http://localhost:8080/api/test')
           .then(response => response.text())
           .catch(error => console.error("Error fetching data: ", error));
   }, []);
+
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+
+    if (location.pathname.startsWith('/seller')) {
+      document.addEventListener('contextmenu', handleContextMenu);
+    }
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, [location.pathname]);
 
   return (
     <div className="App">
@@ -73,12 +87,20 @@ function App() {
 
           <Route path="/upload" element={<S3Uploader  />} />
           <Route path="/seller/verification-start" element={<SellerVerificationStart />} />
-          <Route path="/verifications/:id/camera" element={<VerificationCamera />} />
+          <Route path="/seller/verifications/:id/camera" element={<VerificationCamera />} />
           <Route path="*" element={<div>Not Found</div>} />
 
         </Routes>
       </TimerProvider>
     </div>
+  );
+}
+
+function AppWithRouter() {
+  return (
+    <Router>
+      <App />
+    </Router>
   );
 }
 

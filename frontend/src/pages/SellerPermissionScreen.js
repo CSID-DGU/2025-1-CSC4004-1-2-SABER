@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, {  useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/Sellers.css';
 import logoImage from '../assets/logo.png';
+import { useTimer } from '../contexts/TimerContext';
 
 function SellerPermissionScreen() {
     const navigate = useNavigate();
     const [permissions, setPermissions] = useState({ push: null, camera: null });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { timeLeft, isTimerRunning, resetTimer} = useTimer();
 
+    useEffect(() => {
+        if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
+            resetTimer();
+        }
+    }, [resetTimer]);
+
+    useEffect(() => {
+        if (!isTimerRunning && timeLeft <= 0) {
+            navigate('/seller/verification-failed');
+        }
+    }, [isTimerRunning, timeLeft, navigate]);
+      
     const goToStart = () => {
         navigate('/seller/start');
     };

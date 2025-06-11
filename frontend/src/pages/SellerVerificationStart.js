@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import '../css/Sellers.css';
+import { useTimer } from '../contexts/TimerContext';
 
 function SellerVerificationStart() {
     const [pendingIds, setPendingIds] = useState([]);
@@ -10,6 +11,19 @@ function SellerVerificationStart() {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [verifications, setVerifications] = useState([]);
+    const { timeLeft, isTimerRunning, resetTimer, formatTime } = useTimer();
+
+    useEffect(() => {
+        if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
+            resetTimer();
+        }
+    }, [resetTimer]);
+
+    useEffect(() => {
+        if (!isTimerRunning && timeLeft <= 0) {
+          navigate('/seller/verification-failed');
+        }
+    }, [isTimerRunning, timeLeft, navigate]);
 
     useEffect(() => {
         const verificationLinkId = localStorage.getItem("sessionId");
@@ -39,6 +53,7 @@ function SellerVerificationStart() {
         fetchData();
     }, []);
 
+
     useEffect(() => {
         if (!isLoading && pendingIds.length === 0) {
             const timeoutId = setTimeout(() => {
@@ -62,7 +77,8 @@ function SellerVerificationStart() {
     return (
         <div className="container">
             <h1 className="sellerText">인증 요청 목록</h1>
-
+            <p className="timerText">인증 제한시간: {formatTime(timeLeft)}</p>
+            {timeLeft <= 0 && <p className="timeUpMessage" style={{ color: 'red', fontWeight: 'bold' }}>시간이 초과되었습니다!</p>}   
             {isLoading && <p>인증 요청을 불러오는 중입니다...</p>}
 
             {!isLoading && pendingIds.length === 0 && (
@@ -91,7 +107,7 @@ function SellerVerificationStart() {
                     const label = verif ? verif.label : "알 수 없는 이름";
 
                     return (
-                        <li key={id}>
+                        <li className="button-group" key={id}>
                             <button
                                 className="doneButton"
                                 onClick={() => startVerification(id)}

@@ -2,11 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Sellers.css';
 import logoImage from '../assets/logo.png';
+import { useTimer } from '../contexts/TimerContext'; // useTimer 훅 임포트
 
 function SellerVerificationSubmitScreen() {
   const navigate = useNavigate();
+  const { stopTimer } = useTimer(); // TimerContext에서 stopTimer 함수 가져오기
 
   const goToNext = () => {
+    stopTimer(); // '다음' 버튼 클릭 시 타이머 정지
     navigate('/seller/verification-additional-info');
   };
 
@@ -20,7 +23,7 @@ function SellerVerificationSubmitScreen() {
         <div className="logo-with-text" onClick={goToStart}>
           <img src={logoImage} alt="SABER Logo" className="logo-image" />
           <div className="logo-text">SABER</div>
-        </div> 
+        </div>
         <div className="menuIcon">☰</div>
       </div>
 

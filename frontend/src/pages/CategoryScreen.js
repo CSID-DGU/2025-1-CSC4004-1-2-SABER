@@ -25,7 +25,7 @@ function CategoryScreen({ onCategorySelected }) {
     // verificationId 상태에 저장하도록 수정
     const handleSelect = async () => {
         if (!selectedId) return;
-
+        console.log(selectedId);
         try {
             const res = await setCategory(selectedId);
             const verificationLinkId = res.data;

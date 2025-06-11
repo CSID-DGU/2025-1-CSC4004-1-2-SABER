@@ -44,8 +44,7 @@ export default function StartScreen() {
       <p className="subtitle">서비스 설명, 소개</p>
       <p className="subtitle">실시간으로 거래 물품을</p>
       <p className="subtitle">인증할 수 있는 서비스</p>
-      <button className="button" onClick={ goToNoticeScreen() }>안전하게 인증 후 구매하기</button>
-      <div className="image-placeholder">이미지 자리</div>
+      <button className="button" onClick={ goToNoticeScreen }>안전하게 인증 후 구매하기</button>
     </div>
   );
 }
