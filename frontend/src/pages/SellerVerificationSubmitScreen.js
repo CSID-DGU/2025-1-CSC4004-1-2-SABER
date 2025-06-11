@@ -14,7 +14,7 @@ function SellerVerificationSubmitScreen() {
   };
 
   const goToStart = () => {
-    navigate('/seller/start');
+    navigate('/');
   };
 
   return (

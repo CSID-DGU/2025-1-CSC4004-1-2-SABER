@@ -8,12 +8,13 @@ import logoImage from '../assets/logo.png';
 export default function StartScreen() {
   const navigate = useNavigate();
   const [loadingToken, setLoadingToken] = useState(true);
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
   // 1. 페이지 접속 시 buyerToken 발급
   useEffect(() => {
     async function issueBuyerToken() {
           try {
-            await axios.post('http://localhost:8080/api/token', null, { withCredentials: true });
+            await axios.post(`${baseURL}/api/token`, null, { withCredentials: true });
             setLoadingToken(false);
           } catch (error) {
               console.error('토큰 발급 실패', error);

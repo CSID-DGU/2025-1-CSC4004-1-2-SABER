@@ -11,6 +11,7 @@ function SellerPermissionScreen() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { timeLeft, isTimerRunning, resetTimer} = useTimer();
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
         if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
@@ -45,7 +46,7 @@ function SellerPermissionScreen() {
         setError('');
 
         try {
-            await axios.post(`http://localhost:8080/api/saber/link/${sessionId}/agree`, null, {
+            await axios.post(`${baseURL}/api/saber/link/${sessionId}/agree`, null, {
                 withCredentials: true,
             });
             navigate('/seller/verification-start');

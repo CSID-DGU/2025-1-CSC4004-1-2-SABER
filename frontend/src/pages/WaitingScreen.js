@@ -8,11 +8,12 @@ import logoImage from '../assets/logo.png';
 function WaitingScreen() {
     const navigate = useNavigate();
     const verificationLinkId = localStorage.getItem("sessionId");
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
         const checkStatus = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/link/${verificationLinkId}`);
+                const response = await axios.get(`${baseURL}/api/link/${verificationLinkId}`);
                 const status = response.data.status;
 
                 if (status === 'COMPLETED') {

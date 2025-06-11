@@ -1,12 +1,14 @@
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_BASE_URL;
+
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${baseURL}/api`,
     withCredentials: true, // 쿠키 자동 전송 설정 (토큰 인증 위해 필수)
 });
 
 // 프론트엔드 URL을 상수로 정의
-const FRONTEND_URL = 'http://localhost:3000'; 
+// const FRONTEND_URL = '${baseURL}';
 
 // 카테고리 목록 조회 (GET /api/categories)
 export const fetchCategories = () => api.get('/categories');
@@ -52,7 +54,7 @@ export const createLink = async (verificationId) => {
         }
 
         // 프론트엔드 URL을 사용하여 새로운 링크를 구성
-        const fullLink = `${FRONTEND_URL}/seller/start?token=${token}`;
+        const fullLink = `${baseURL}/seller/start?token=${token}`;
         
         console.log("최종 생성된 프론트엔드 링크:", fullLink); // 최종 링크 로그
 

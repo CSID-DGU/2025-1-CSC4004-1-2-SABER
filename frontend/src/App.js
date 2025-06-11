@@ -31,13 +31,14 @@ import EndScreen from './pages/EndScreen';
 import S3Uploader from "./pages/S3Uploader";
 import VerificationCamera from "./pages/VerificationCamera";
 import SellerVerificationStart from "./pages/SellerVerificationStart";
+import SellerVerificationList from "./pages/SellerVerificationStart";
 
 function App() {
   const [verificationId, setVerificationId] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-      fetch('http://localhost:8080/api/test')
+      fetch('http://192.168.45.85:8080/api/test')
           .then(response => response.text())
           .catch(error => console.error("Error fetching data: ", error));
   }, []);
@@ -74,6 +75,7 @@ function App() {
           <Route path="/seller/permission" element={<SellerPermissionScreen />} />
           <Route path="/seller/denied" element={<SellerPermissionDeniedScreen />} />
           <Route path="/seller/camera" element={<SellerCameraScreen />} />
+          <Route path="/seller/verification-list" element={<SellerVerificationList />} />
           <Route path="/seller/verification-complete" element={<SellerVerificationCompleteScreen />} />
           <Route path="/seller/verification-failed" element={<SellerVerificationFailedScreen />} />
           <Route path="/seller/submit" element={<SellerVerificationSubmitScreen />} />
@@ -87,7 +89,7 @@ function App() {
 
           <Route path="/upload" element={<S3Uploader  />} />
           <Route path="/seller/verification-start" element={<SellerVerificationStart />} />
-          <Route path="/seller/verifications/:id/camera" element={<VerificationCamera />} />
+          <Route path="/verifications/:id/camera" element={<VerificationCamera />} />
           <Route path="*" element={<div>Not Found</div>} />
 
         </Routes>

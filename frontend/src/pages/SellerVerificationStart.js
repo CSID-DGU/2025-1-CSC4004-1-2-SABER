@@ -4,58 +4,70 @@ import axios from "axios";
 import '../css/Sellers.css';
 import { useTimer } from '../contexts/TimerContext';
 
-function SellerVerificationStart() {
+export default function SellerVerificationList() {
+    const navigate = useNavigate();
+    const { timeLeft, isTimerRunning, formatTime } = useTimer();
+
     const [pendingIds, setPendingIds] = useState([]);
     const [requirementText, setRequirementText] = useState("");
-    const [message, setMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
     const [verifications, setVerifications] = useState([]);
-    const { timeLeft, isTimerRunning, resetTimer, formatTime } = useTimer();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
-    useEffect(() => {
-        if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
-            resetTimer();
-        }
-    }, [resetTimer]);
-
+    // 타이머 종료 시 실패 페이지 이동
     useEffect(() => {
         if (!isTimerRunning && timeLeft <= 0) {
-          navigate('/seller/verification-failed');
+            navigate('/seller/verification-failed');
         }
     }, [isTimerRunning, timeLeft, navigate]);
 
-    useEffect(() => {
-        const verificationLinkId = localStorage.getItem("sessionId");
+    // 인증 목록 불러오기
+    const loadVerificationList = async (sessionId) => {
+        setIsLoading(true);
+        try {
+            const [idsRes, infoRes] = await Promise.all([
+                axios.get(`http://192.168.45.85:8080/api/saber/link/${sessionId}/pending-verification-ids`),
+                axios.get(`http://192.168.45.85:8080/api/saber/link/${sessionId}/info`)
+            ]);
 
-        if (!verificationLinkId) {
-            console.error("로컬스토리지에 verificationLinkId가 없습니다.");
+            setPendingIds(idsRes.data);
+            setRequirementText(infoRes.data.requirementText);
+            setVerifications(infoRes.data.verifications);
+        } catch (err) {
+            console.error("데이터 불러오기 실패", err);
+            setError('인증 목록 불러오기 실패');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 최초 마운트 시 세션 체크 후 인증 목록 로딩
+    useEffect(() => {
+        const sessionId = localStorage.getItem("sessionId");
+        if (!sessionId) {
+            navigate('/seller/verification-start');
             return;
         }
+        loadVerificationList(sessionId);
+    }, [navigate]);
 
-        const fetchData = async () => {
-            try {
-                const [idsRes, infoRes] = await Promise.all([
-                    axios.get(`http://localhost:8080/api/saber/link/${verificationLinkId}/pending-verification-ids`),
-                    axios.get(`http://localhost:8080/api/saber/link/${verificationLinkId}/info`)
-                ]);
+    // 인증 개별 시작
+    const startSingleVerification = (id) => {
+        axios
+            .post(`${baseURL}/api/verification/${id}/start`)
+            .then(() => {
+                navigate(`/verifications/${id}/camera`);
+            })
+            .catch((err) => {
+                console.error("인증 시작 실패", err);
+                setError("인증 시작 실패");
+            });
+    };
 
-                setPendingIds(idsRes.data);
-                setRequirementText(infoRes.data.requirementText);
-                setVerifications(infoRes.data.verifications);
-            } catch (err) {
-                console.error("데이터 불러오기 실패", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-
+    // 모든 인증 완료 후 제출 페이지 이동 대기
     useEffect(() => {
-        if (!isLoading && pendingIds.length === 0) {
+        if (!isLoading && pendingIds.length === 0 && localStorage.getItem("sessionId")) {
             const timeoutId = setTimeout(() => {
                 navigate('/seller/submit');
             }, 5000);
@@ -63,22 +75,11 @@ function SellerVerificationStart() {
         }
     }, [pendingIds, isLoading, navigate]);
 
-    const startVerification = (id) => {
-        axios
-            .post(`http://localhost:8080/api/verification/${id}/start`)
-            .then(() => {
-                navigate(`/verifications/${id}/camera`);
-            })
-            .catch((err) => {
-                console.error("인증 시작 실패", err);
-            });
-    };
-
     return (
         <div className="container">
             <h1 className="sellerText">인증 요청 목록</h1>
             <p className="timerText">인증 제한시간: {formatTime(timeLeft)}</p>
-            {timeLeft <= 0 && <p className="timeUpMessage" style={{ color: 'red', fontWeight: 'bold' }}>시간이 초과되었습니다!</p>}   
+            {timeLeft <= 0 && <p className="timeUpMessage" style={{ color: 'red', fontWeight: 'bold' }}>시간이 초과되었습니다!</p>}
             {isLoading && <p>인증 요청을 불러오는 중입니다...</p>}
 
             {!isLoading && pendingIds.length === 0 && (
@@ -93,7 +94,7 @@ function SellerVerificationStart() {
                             {requirementText.split('\n').map((line, index) => (
                                 <React.Fragment key={index} className="subTitle">
                                     - {line}
-                                    <br/>
+                                    <br />
                                 </React.Fragment>
                             ))}
                         </p>
@@ -110,7 +111,7 @@ function SellerVerificationStart() {
                         <li className="button-group" key={id}>
                             <button
                                 className="doneButton"
-                                onClick={() => startVerification(id)}
+                                onClick={() => startSingleVerification(id)}
                             >
                                 인증 시작 ({label})
                             </button>
@@ -118,8 +119,7 @@ function SellerVerificationStart() {
                     );
                 })}
             </ul>
+            {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
         </div>
     );
 }
-
-export default SellerVerificationStart;

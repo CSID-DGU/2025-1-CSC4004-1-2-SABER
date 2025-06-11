@@ -12,6 +12,8 @@ function VerificationCamera() {
     const canvasRef = useRef(null);
     const [uploading, setUploading] = useState(false);
     const [cameraFacingMode, setCameraFacingMode] = useState('user');
+    const localURL = "http://localhost:8080";
+    const baseURL = process.env.REACT_APP_BASE_URL;
 
     // 1. 카메라 시작 및 전환 로직
     useEffect(() => {
@@ -186,7 +188,7 @@ function VerificationCamera() {
 
             try {
                 // 1) S3 업로드 API 호출
-                const uploadResponse = await fetch("http://localhost:8080/api/files/upload", {
+                const uploadResponse = await fetch(`${localURL}/api/files/upload`, {
                     method: "POST",
                     body: formData,
                 });
@@ -196,7 +198,7 @@ function VerificationCamera() {
                 const s3Url = await uploadResponse.text();
 
                 // 2) 인증 제출 API 호출 (comment 포함)
-                const submitResponse = await fetch(`http://localhost:8080/api/verifications/${verificationId}/submit`, {
+                const submitResponse = await fetch(`${baseURL}/api/verifications/${verificationId}/submit`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
