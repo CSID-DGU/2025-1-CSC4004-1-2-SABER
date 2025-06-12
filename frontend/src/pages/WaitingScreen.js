@@ -45,10 +45,6 @@ function WaitingScreen() {
         navigate('/');
     };
 
-    const Next = () => {
-        navigate('/buyer/complete');
-    };
-
     return (
         <div className="container">
             <div className="header-medium">
@@ -74,7 +70,7 @@ function WaitingScreen() {
             <h2 className="title-medium">판매자 인증 진행중</h2>
             <p className="subtitle-small">잠시만 기다려주세요</p>
 
-            <div className="waiting-button" onClick={Next}>판매자가 인증을 진행하고 있습니다</div>
+            <div className="waiting-button">판매자가 인증을 진행하고 있습니다</div>
         </div>
     );
 }

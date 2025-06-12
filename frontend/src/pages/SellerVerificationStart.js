@@ -27,8 +27,8 @@ export default function SellerVerificationList() {
         setIsLoading(true);
         try {
             const [idsRes, infoRes] = await Promise.all([
-                axios.get(`http://192.168.45.85:8080/api/saber/link/${sessionId}/pending-verification-ids`),
-                axios.get(`http://192.168.45.85:8080/api/saber/link/${sessionId}/info`)
+                axios.get(`${baseURL}/api/saber/link/${sessionId}/pending-verification-ids`),
+                axios.get(`${baseURL}/api/saber/link/${sessionId}/info`)
             ]);
 
             setPendingIds(idsRes.data);
