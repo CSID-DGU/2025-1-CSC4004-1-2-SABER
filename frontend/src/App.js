@@ -36,9 +36,10 @@ import SellerVerificationList from "./pages/SellerVerificationStart";
 function App() {
   const [verificationId, setVerificationId] = useState(null);
   const location = useLocation();
+  const baseURL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-      fetch('http://192.168.45.85:8080/api/test')
+      fetch(`${baseURL}/api/test`)
           .then(response => response.text())
           .catch(error => console.error("Error fetching data: ", error));
   }, []);
