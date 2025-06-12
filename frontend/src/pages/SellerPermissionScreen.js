@@ -11,7 +11,7 @@ function SellerPermissionScreen() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { timeLeft, isTimerRunning, resetTimer} = useTimer();
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {

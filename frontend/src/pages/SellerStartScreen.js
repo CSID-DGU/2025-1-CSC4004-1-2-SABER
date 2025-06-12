@@ -10,7 +10,7 @@ export default function SellerStartScreen() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
 
     function getVisitorKey() {
@@ -23,7 +23,7 @@ export default function SellerStartScreen() {
     }
 
     const startVerification = async (token) => {
-        console.log("BASE_URL:", process.env.REACT_APP_BASE_URL);
+        console.log("BASE_URL:", process.env.API_BASE_URL);
         setError('');
         setLoading(true);
         try {

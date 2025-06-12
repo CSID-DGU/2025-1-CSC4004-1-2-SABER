@@ -8,7 +8,7 @@ import logoImage from '../assets/logo.png';
 function WaitingScreen() {
     const navigate = useNavigate();
     const verificationLinkId = localStorage.getItem("sessionId");
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const checkStatus = async () => {

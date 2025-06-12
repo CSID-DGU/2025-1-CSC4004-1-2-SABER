@@ -8,7 +8,7 @@ import logoImage from '../assets/logo.png';
 export default function StartScreen() {
   const navigate = useNavigate();
   const [loadingToken, setLoadingToken] = useState(true);
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
   // 1. 페이지 접속 시 buyerToken 발급
   useEffect(() => {

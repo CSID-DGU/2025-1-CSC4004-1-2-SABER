@@ -13,7 +13,7 @@ export default function SellerVerificationList() {
     const [verifications, setVerifications] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     // 타이머 종료 시 실패 페이지 이동
     useEffect(() => {

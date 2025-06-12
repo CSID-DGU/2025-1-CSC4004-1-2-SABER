@@ -12,7 +12,7 @@ function ResultScreen() {
     const [loadingPhoto, setLoadingPhoto] = useState(false);
     const [photoError, setPhotoError] = useState(null);
     const [selectedFeedback, setSelectedFeedback] = useState(null);
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     const verificationLinkId = localStorage.getItem("sessionId");
 

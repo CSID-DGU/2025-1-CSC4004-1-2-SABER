@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function S3Uploader() {
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
-    const baseURL = process.env.REACT_APP_BASE_URL;
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     // 파일 선택 핸들러
     const handleFileChange = (e) => {
