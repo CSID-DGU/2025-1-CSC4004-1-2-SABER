@@ -19,6 +19,9 @@ function WaitingScreen() {
                 if (status === 'COMPLETED') {
                     navigate('/result', { state: { verificationLinkId } });
                 }
+                if (status === 'FAILED' || status === 'TERMINATED' || status === 'EXPIRED') {
+                    navigate('/seller/verification-failed');
+                }
             } catch (error) {
                 console.error('상태 조회 실패:', error);
             }
@@ -27,8 +30,8 @@ function WaitingScreen() {
         // 컴포넌트가 마운트되면 즉시 호출
         checkStatus();
 
-        // 1분마다 상태 체크
-        const intervalId = setInterval(checkStatus, 60000);
+        // 10초마다 상태 체크
+        const intervalId = setInterval(checkStatus, 10000);
 
         // 컴포넌트 언마운트 시 interval 정리
         return () => clearInterval(intervalId);

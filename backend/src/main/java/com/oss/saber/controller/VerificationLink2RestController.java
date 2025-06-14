@@ -2,6 +2,7 @@ package com.oss.saber.controller;
 
 import com.oss.saber.domain.Verification;
 import com.oss.saber.domain.VerificationLink;
+import com.oss.saber.domain.VerificationLinkStatus;
 import com.oss.saber.domain.VerificationResult;
 import com.oss.saber.dto.VerificationLinkResponse;
 import com.oss.saber.dto.VerificationResponse;
@@ -10,6 +11,7 @@ import com.oss.saber.service.VerificationLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,7 @@ public class VerificationLink2RestController {
                 .requirementText(link.getRequirementText())
                 .verifications(verificationsResponse)
                 .build();
+
         return ResponseEntity.ok(response);
     }
 
@@ -54,8 +57,20 @@ public class VerificationLink2RestController {
 
     @GetMapping("/link/{verificationLinkId}/info")
     @Operation(summary = "인증 내용 조회", description = "인증에 대한 내용을 제공합니다.")
-    public ResponseEntity<VerificationLinkResponse.toResponse> getVerificationLink(@PathVariable Long verificationLinkId) {
+    public ResponseEntity<?> getVerificationLink(@PathVariable Long verificationLinkId) {
         VerificationLink link = verificationLinkService.getVerificationLink(verificationLinkId);
+
+        boolean checkTimeout = verificationLinkService.checkTimeout(verificationLinkId);
+        if (checkTimeout) {
+            VerificationLinkResponse.toResponse errorResponse = VerificationLinkResponse.toResponse.builder()
+                    .id(link.getId())
+                    .expiresAt(link.getExpiresAt())
+                    .requirementText(link.getRequirementText())
+                    .status(link.getStatus())
+                    .verifications(null)
+                    .build();
+            return ResponseEntity.ok(errorResponse);
+        }
 
         List<Verification> verifications = link.getVerifications();
         List<VerificationResponse.infoResponse> verificationResponses = verifications.stream()
@@ -64,6 +79,8 @@ public class VerificationLink2RestController {
         VerificationLinkResponse.toResponse response = VerificationLinkResponse.toResponse.builder()
                 .id(link.getId())
                 .requirementText(link.getRequirementText())
+                .expiresAt(link.getExpiresAt())
+                .status(link.getStatus())
                 .productName(link.getProductName())
                 .verifications(verificationResponses)
                 .build();

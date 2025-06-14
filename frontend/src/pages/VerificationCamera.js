@@ -8,15 +8,22 @@ function VerificationCamera() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [comment, setComment] = useState("");
     const [showModal, setShowModal] = useState(false);
-    const videoRef = useRef(null);
-    const canvasRef = useRef(null);
     const [uploading, setUploading] = useState(false);
     const [cameraFacingMode, setCameraFacingMode] = useState('user');
+
+    // 권한 관련 상태 추가
+    const [permissionStatus, setPermissionStatus] = useState('checking'); // 'checking', 'granted', 'denied', 'prompt'
+    const [cameraReady, setCameraReady] = useState(false);
+
+    const [isCameraAllowed, setIsCameraAllowed] = useState(false);
+
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
     const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-    // 1. 카메라 시작 및 전환 로직
+    // 1. 컴포넌트 마운트 시 권한 확인
     useEffect(() => {
-        startCamera();
+        checkCameraPermission();
 
         // 클린업 함수: 컴포넌트 언마운트 시 카메라 스트림 정리
         return () => {
@@ -24,17 +31,26 @@ function VerificationCamera() {
                 videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [cameraFacingMode]); // cameraFacingMode가 변경될 때마다 이 useEffect를 재실행
+    }, []);
 
-    // 2. 보안 위험 감지 useEffect
+    // 2. 권한이 허용되면 카메라 시작
+    useEffect(() => {
+        if (permissionStatus === 'granted' && !cameraReady) {
+            startCamera();
+        }
+    }, [permissionStatus, cameraFacingMode]);
+
+    // 3. 보안 위험 감지 useEffect
     useEffect(() => {
         const handleSecurityRisk = () => {
-            // videoRef.current.srcObject를 통해 현재 스트림에 접근
+            if (isCameraAllowed) {
+                return;
+            }
             if (videoRef.current && videoRef.current.srcObject) {
                 videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-                videoRef.current.srcObject = null; // 스트림을 명시적으로 null로 설정
+                videoRef.current.srcObject = null;
             }
-            navigate('/capture-warning'); // 경고 페이지로 이동
+            navigate('/capture-warning');
         };
 
         const handleVisibilityChange = () => {
@@ -47,67 +63,60 @@ function VerificationCamera() {
             handleSecurityRisk();
         };
 
-        window.addEventListener('blur', handleBlur);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
+        // 카메라가 준비된 상태에서만 보안 이벤트 리스너 등록
+        if (cameraReady) {
+            window.addEventListener('blur', handleBlur);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+        }
 
         return () => {
             window.removeEventListener('blur', handleBlur);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, [navigate]); // videoRef.current.srcObject는 직접적인 의존성 배열에 넣기 어려워 navigate만 포함
+    }, [navigate, cameraReady]);
 
-    // 랜덤 코드 생성 함수
-    const generateRandomCode = () => {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < 8; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
+    // 카메라 권한 확인 함수
+    const checkCameraPermission = async () => {
+        try {
+            // navigator.permissions API를 사용하여 권한 상태 확인
+            if ('permissions' in navigator) {
+                const permission = await navigator.permissions.query({ name: 'camera' });
+                setPermissionStatus(permission.state);
+
+                // 권한 상태 변경 리스너 등록
+                permission.onchange = () => {
+                    setPermissionStatus(permission.state);
+                };
+            } else {
+                // permissions API를 지원하지 않는 브라우저의 경우 직접 권한 요청
+                setPermissionStatus('prompt');
+            }
+        } catch (error) {
+            console.error("권한 확인 오류:", error);
+            setPermissionStatus('prompt');
         }
-        return result;
     };
 
-    // 워터마크를 캔버스에 그리는 함수
-    const drawWatermark = (ctx, canvasWidth, canvasHeight, watermarkText) => {
-        // 워터마크 스타일 설정
-        ctx.save();
-        ctx.globalAlpha = 0.7; // 투명도 설정
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; // 배경색 (반투명 흰색)
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'; // 테두리색
-        ctx.lineWidth = 2;
+    // 카메라 권한 요청 함수
+    const requestCameraPermission = async () => {
+        try {
+            setPermissionStatus('checking');
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: cameraFacingMode }
+            });
 
-        // 폰트 크기 동적 조정 (캔버스 크기에 따라)
-        const fontSize = Math.max(16, Math.min(canvasWidth, canvasHeight) * 0.04);
-        ctx.font = `bold ${fontSize}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        // 텍스트 크기 측정
-        const textMetrics = ctx.measureText(watermarkText);
-        const textWidth = textMetrics.width;
-        const textHeight = fontSize;
-
-        // 워터마크 위치 (우하단)
-        const padding = 20;
-        const x = canvasWidth - textWidth / 2 - padding;
-        const y = canvasHeight - textHeight / 2 - padding;
-
-        // 배경 박스 그리기
-        const boxPadding = 10;
-        ctx.fillRect(
-            x - textWidth / 2 - boxPadding,
-            y - textHeight / 2 - boxPadding,
-            textWidth + boxPadding * 2,
-            textHeight + boxPadding * 2
-        );
-
-        // 텍스트 테두리 그리기
-        ctx.strokeText(watermarkText, x, y);
-
-        // 텍스트 그리기
-        ctx.fillStyle = 'black';
-        ctx.fillText(watermarkText, x, y);
-
-        ctx.restore();
+            // 권한이 허용되면 스트림을 즉시 중지하고 상태 업데이트
+            stream.getTracks().forEach(track => track.stop());
+            setPermissionStatus('granted');
+        } catch (error) {
+            console.error("카메라 권한 요청 실패:", error);
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                setPermissionStatus('denied');
+            } else {
+                setPermissionStatus('denied');
+                alert("카메라에 접근할 수 없습니다. 브라우저 설정을 확인해주세요.");
+            }
+        }
     };
 
     const toggleCameraFacingMode = () => {
@@ -115,6 +124,7 @@ function VerificationCamera() {
     };
 
     const startCamera = async () => {
+        setIsCameraAllowed(true);
         // 기존 스트림이 있다면 중지합니다.
         if (videoRef.current && videoRef.current.srcObject) {
             videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
@@ -123,18 +133,53 @@ function VerificationCamera() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: {
-                    facingMode: cameraFacingMode // 현재 카메라 방향 상태 사용
+                    facingMode: cameraFacingMode
                 }
             });
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
+                setCameraReady(true);
             }
         } catch (err) {
-            console.error("카메라 접근 오류:", err);
-            alert("카메라 권한이 필요하거나 해당 카메라를 사용할 수 없습니다. 브라우저 설정을 확인해주세요.");
-            // 권한 거부 시 적절한 페이지로 이동
-            // navigate('/permission-denied'); // 예시: 권한 거부 페이지
+            console.error("카메라 시작 오류:", err);
+            setPermissionStatus('denied');
+            setCameraReady(false);
         }
+    };
+
+    // 워터마크를 캔버스에 그리는 함수
+    const drawWatermark = (ctx, canvasWidth, canvasHeight, watermarkText) => {
+        ctx.save();
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.lineWidth = 2;
+
+        const fontSize = Math.max(16, Math.min(canvasWidth, canvasHeight) * 0.04);
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const textMetrics = ctx.measureText(watermarkText);
+        const textWidth = textMetrics.width;
+        const textHeight = fontSize;
+
+        const padding = 20;
+        const x = canvasWidth - textWidth / 2 - padding;
+        const y = canvasHeight - textHeight / 2 - padding;
+
+        const boxPadding = 10;
+        ctx.fillRect(
+            x - textWidth / 2 - boxPadding,
+            y - textHeight / 2 - boxPadding,
+            textWidth + boxPadding * 2,
+            textHeight + boxPadding * 2
+        );
+
+        ctx.strokeText(watermarkText, x, y);
+        ctx.fillStyle = 'black';
+        ctx.fillText(watermarkText, x, y);
+        ctx.restore();
     };
 
     const takePhoto = () => {
@@ -146,29 +191,23 @@ function VerificationCamera() {
         canvas.height = video.videoHeight || 480;
 
         const ctx = canvas.getContext("2d");
-
-        // 비디오 이미지를 캔버스에 그리기
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // 랜덤 코드 생성 및 워터마크 추가
-        const randomCode = generateRandomCode();
         const now = new Date();
         const date = now.toLocaleDateString('ko-KR');
         const time = now.toLocaleTimeString('ko-KR', { hour12: false });
-        const watermarkText = `${randomCode} | ${date} ${time}`;
+        const watermarkText = `${date} ${time}에 촬영됨`;
 
         drawWatermark(ctx, canvas.width, canvas.height, watermarkText);
 
-        // 캔버스에서 사진 미리보기용 URL 생성
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.9); // 품질 0.9로 설정
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
         setPhotoUrl(dataUrl);
-        setShowModal(true); // 모달 표시
+        setShowModal(true);
     };
 
     const retakePhoto = () => {
         setShowModal(false);
         setPhotoUrl("");
-        // 카메라는 계속 실행 중이므로 다시 촬영 가능
     };
 
     const uploadPhoto = async () => {
@@ -186,7 +225,6 @@ function VerificationCamera() {
             formData.append("file", new File([blob], "photo.jpg", { type: "image/jpeg" }));
 
             try {
-                // 1) S3 업로드 API 호출
                 const uploadResponse = await fetch(`${baseURL}/api/files/upload`, {
                     method: "POST",
                     body: formData,
@@ -196,15 +234,13 @@ function VerificationCamera() {
 
                 const s3Url = await uploadResponse.text();
 
-                // 2) 인증 제출 API 호출 (comment 포함)
                 const submitResponse = await fetch(`${baseURL}/api/verifications/${verificationId}/submit`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        fileUrl: s3Url,
-                        comment: comment,
+                        fileUrl: s3Url
                     }),
                 });
 
@@ -212,21 +248,67 @@ function VerificationCamera() {
 
                 alert("사진 제출 성공!");
                 setShowModal(false);
+                setIsCameraAllowed(false);
                 navigate("/seller/verification-start");
             } catch (error) {
                 alert(error.message);
             } finally {
                 setUploading(false);
             }
-        }, "image/jpeg", 0.9); // 품질 0.9로 설정
+        }, "image/jpeg", 0.9);
     };
 
+    // 권한 상태에 따른 UI 렌더링
+    if (permissionStatus === 'checking') {
+        return (
+            <div className="seller-camera-container">
+                <h2 className="title">카메라 권한 확인 중...</h2>
+                <p>잠시만 기다려주세요.</p>
+            </div>
+        );
+    }
+
+    if (permissionStatus === 'denied') {
+        return (
+            <div className="seller-camera-container">
+                <h2 className="title">카메라 권한이 필요합니다</h2>
+                <p>인증 사진을 촬영하기 위해 카메라 권한이 필요합니다.</p>
+                <p>브라우저 설정에서 카메라 권한을 허용해주세요.</p>
+                <button className="cameraButton" onClick={requestCameraPermission}>
+                    카메라 권한 다시 요청
+                </button>
+                <button className="cameraButton" onClick={() => navigate(-1)}>
+                    이전 페이지로 돌아가기
+                </button>
+            </div>
+        );
+    }
+
+    if (permissionStatus === 'prompt') {
+        return (
+            <div className="seller-camera-container">
+                <h2 className="title">카메라 권한 요청</h2>
+                <p>인증 사진을 촬영하기 위해 카메라 권한이 필요합니다.</p>
+                <button className="cameraButton" onClick={requestCameraPermission}>
+                    카메라 권한 허용
+                </button>
+                <button className="cameraButton" onClick={() => navigate(-1)}>
+                    취소
+                </button>
+            </div>
+        );
+    }
+
+    // 권한이 허용된 경우 기존 UI 표시
     return (
         <div className="seller-camera-container">
             <h2 className="title">인증 사진 제출</h2>
-            <button className="cameraButton" onClick={startCamera}>
-                카메라 시작
-            </button>
+
+            {!cameraReady && (
+                <button className="cameraButton" onClick={startCamera}>
+                    카메라 시작
+                </button>
+            )}
 
             <video
                 ref={videoRef}
@@ -235,13 +317,17 @@ function VerificationCamera() {
                 style={{ width: 300, marginTop: 10, borderRadius: 8, backgroundColor: "#000" }}
             />
 
-            <br />
-            <button className="cameraButton" onClick={toggleCameraFacingMode}>
-                카메라 전환
-            </button>
-            <button onClick={takePhoto} className="cameraButton">
-                사진 촬영
-            </button>
+            {cameraReady && (
+                <>
+                    <br />
+                    <button className="cameraButton" onClick={toggleCameraFacingMode}>
+                        카메라 전환
+                    </button>
+                    <button onClick={takePhoto} className="cameraButton">
+                        사진 촬영
+                    </button>
+                </>
+            )}
 
             <canvas ref={canvasRef} style={{ display: "none" }} />
 
@@ -258,14 +344,6 @@ function VerificationCamera() {
                                 className="modal-image"
                             />
                         )}
-
-                        <textarea
-                            placeholder="인증에 대한 코멘트를 입력하세요"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            rows={3}
-                            className="textBox"
-                        />
 
                         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                             <button
