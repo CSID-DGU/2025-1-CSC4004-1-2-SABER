@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function S3Uploader() {
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     // 파일 선택 핸들러
     const handleFileChange = (e) => {
@@ -20,7 +21,7 @@ function S3Uploader() {
         formData.append("file", file);
 
         try {
-            const response = await fetch("http://localhost:8080/api/files/upload", {
+            const response = await fetch(`${baseURL}/api/files/upload`, {
                 method: "POST",
                 body: formData,
             });

@@ -8,15 +8,19 @@ import logoImage from '../assets/logo.png';
 function WaitingScreen() {
     const navigate = useNavigate();
     const verificationLinkId = localStorage.getItem("sessionId");
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const checkStatus = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/link/${verificationLinkId}`);
+                const response = await axios.get(`${baseURL}/api/link/${verificationLinkId}`);
                 const status = response.data.status;
 
                 if (status === 'COMPLETED') {
                     navigate('/result', { state: { verificationLinkId } });
+                }
+                if (status === 'FAILED' || status === 'TERMINATED' || status === 'EXPIRED') {
+                    navigate('/seller/verification-failed');
                 }
             } catch (error) {
                 console.error('상태 조회 실패:', error);
@@ -26,8 +30,8 @@ function WaitingScreen() {
         // 컴포넌트가 마운트되면 즉시 호출
         checkStatus();
 
-        // 1분마다 상태 체크
-        const intervalId = setInterval(checkStatus, 60000);
+        // 10초마다 상태 체크
+        const intervalId = setInterval(checkStatus, 10000);
 
         // 컴포넌트 언마운트 시 interval 정리
         return () => clearInterval(intervalId);
@@ -42,10 +46,6 @@ function WaitingScreen() {
 
     const goToHome = () => {
         navigate('/');
-    };
-
-    const Next = () => {
-        navigate('/buyer/complete');
     };
 
     return (
@@ -73,7 +73,7 @@ function WaitingScreen() {
             <h2 className="title-medium">판매자 인증 진행중</h2>
             <p className="subtitle-small">잠시만 기다려주세요</p>
 
-            <div className="waiting-button" onClick={Next}>판매자가 인증을 진행하고 있습니다</div>
+            <div className="waiting-button">판매자가 인증을 진행하고 있습니다</div>
         </div>
     );
 }

@@ -8,15 +8,17 @@ function EndScreen() {
   const navigate = useNavigate();
 
   const handleRetry = () => {
-    navigate('/seller/camera'); // 재인증 시작
+    alert('재인증 기능은 현재 구현 중입니다.');
+    navigate('/');
   };
 
   const handleAdditional = () => {
-    navigate('/seller/verification-additional-info'); // 추가 인증
+    alert('추가인증 기능은 현재 구현 중입니다.');
+    navigate('/');
   };
 
   const handleClose = () => {
-    window.close(); // 탭 닫기 시도
+    window.close();
   };
 
   const goToMain = () => {
@@ -50,11 +52,8 @@ function EndScreen() {
         <button className="end-button" onClick={handleAdditional}>
           추가인증: 추가로 궁금한 점에 대한 추가인증
         </button>
-        <button className="end-button" onClick={handleClose}>
-          탭 닫기
-        </button>
         <button className="end-button-black" onClick={goToMain}>
-          메인 화면
+          메인 화면으로
         </button>
       </div>
     </div>

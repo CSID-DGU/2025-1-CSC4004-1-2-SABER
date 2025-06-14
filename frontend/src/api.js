@@ -1,18 +1,18 @@
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_API_BASE_URL;
+const linkUrl = process.env.REACT_APP_LINK_URL;
+
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: `${baseURL}/api`,
     withCredentials: true, // 쿠키 자동 전송 설정 (토큰 인증 위해 필수)
 });
 
-// 프론트엔드 URL을 상수로 정의
-const FRONTEND_URL = 'http://localhost:3000'; 
-
 // 카테고리 목록 조회 (GET /api/categories)
-export const fetchCategories = () => api.get('/categories');
+export const fetchCategories = () => api.get(`/categories`);
 
 // 전체 인증 옵션 조회 (GET /api/defaultVerifications)
-export const fetchAllDefaultVerifications = () => api.get('/defaultVerifications');
+export const fetchAllDefaultVerifications = () => api.get(`${baseURL}/api/defaultVerifications`);
 
 // 추천 인증 옵션 조회 (GET /api/categories/{categoryId}/recommended-verifications)
 export const fetchRecommendedVerifications = (categoryId) => api.get(`/categories/${categoryId}/recommended-verifications`);
@@ -33,7 +33,6 @@ export const createLink = async (verificationId) => {
         console.log("서버 응답 전체:", response.data); // 서버 응답 전체를 로그
         
         // 서버 응답에서 link와 status를 추출
-        // response.data.link가 "http://localhost:8080/saber?token=..." 형태임을 전제로 합니다.
         const serverProvidedLink = response.data.link;
         const status = response.data.status; 
 
@@ -52,7 +51,7 @@ export const createLink = async (verificationId) => {
         }
 
         // 프론트엔드 URL을 사용하여 새로운 링크를 구성
-        const fullLink = `${FRONTEND_URL}/seller/start?token=${token}`;
+        const fullLink = `${linkUrl}/seller/start?token=${token}`;
         
         console.log("최종 생성된 프론트엔드 링크:", fullLink); // 최종 링크 로그
 

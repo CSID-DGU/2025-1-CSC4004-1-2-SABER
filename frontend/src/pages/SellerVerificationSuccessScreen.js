@@ -7,7 +7,7 @@ function SellerVerificationSuccessScreen() {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate('/seller/start');
+    navigate('/');
   };
 
   return (

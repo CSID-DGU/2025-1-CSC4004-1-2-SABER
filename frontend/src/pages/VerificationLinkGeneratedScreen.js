@@ -14,7 +14,6 @@ export default function VerificationLinkGeneratedScreen({ verificationId }) {
     localStorage.setItem("sessionId", verificationId);
 
     useEffect(() => {
-        // console.log('verificationId:', verificationId);
         handleCreateLink();
     }, []);
 
@@ -47,12 +46,37 @@ export default function VerificationLinkGeneratedScreen({ verificationId }) {
     };
 
     const handleCopyClick = () => {
-        navigator.clipboard.writeText(link);
-        alert('링크가 복사되었습니다.');
-        setCopied(true);
-        setTimeout(() => {
-            navigate('/waiting', { state: { verificationLinkId : verificationId} });
-        }, 5000);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(link)
+                .then(() => {
+                    alert('링크가 복사되었습니다.');
+                    setCopied(true);
+                    setTimeout(() => {
+                        navigate('/waiting', { state: { verificationLinkId: verificationId } });
+                    }, 5000);
+                })
+                .catch(err => {
+                    console.error('클립보드 복사 실패:', err);
+                    alert('복사에 실패했습니다.');
+                });
+        } else {
+            // fallback: textarea를 만들어 복사하는 방법
+            const textarea = document.createElement('textarea');
+            textarea.value = link || '';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('링크가 복사되었습니다. (fallback)');
+                setCopied(true);
+                setTimeout(() => {
+                    navigate('/waiting', { state: { verificationLinkId: verificationId } });
+                }, 5000);
+            } catch (err) {
+                alert('복사에 실패했습니다.');
+            }
+            document.body.removeChild(textarea);
+        }
     };
 
     const goToHome = () => {
@@ -60,7 +84,7 @@ export default function VerificationLinkGeneratedScreen({ verificationId }) {
     };
 
     const Next = () => {
-        navigate('/waiting', { state: { verificationLinkId : verificationId} });
+        navigate('/waiting', { state: { verificationLinkId: verificationId } });
     };
 
     return (
@@ -90,7 +114,7 @@ export default function VerificationLinkGeneratedScreen({ verificationId }) {
 
             <div className="link-container">
                 {link && (
-                    <div> 
+                    <div>
                         <p><a href={link} target="_blank" rel="noreferrer">{link}</a></p>
                         <p>상태: {status}</p>
                         {copied && <p className="info-text">5초 후 다음 화면으로 이동합니다...</p>}

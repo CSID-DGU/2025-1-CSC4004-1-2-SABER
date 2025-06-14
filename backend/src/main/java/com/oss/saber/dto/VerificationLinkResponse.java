@@ -18,6 +18,8 @@ public class VerificationLinkResponse {
     @AllArgsConstructor
     public static class toResponse{
         Long id;
+        VerificationLinkStatus status;
+        LocalDateTime expiresAt;
         String productName;
         String requirementText;
         List<VerificationResponse.infoResponse> verifications;

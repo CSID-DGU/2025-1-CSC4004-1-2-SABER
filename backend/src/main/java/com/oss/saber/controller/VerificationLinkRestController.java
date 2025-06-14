@@ -54,8 +54,7 @@ public class VerificationLinkRestController {
                                                @CookieValue(name = "buyerToken", required = false) String token) {
         if (token == null) return ResponseEntity.status(401).build();
 
-        String visitorKey = tokenProvider.getSubject(token);
-        VerificationLink link = verificationLinkService.createLinkWithVisitorKey(request, visitorKey);
+        VerificationLink link = verificationLinkService.createLink(request);
         return ResponseEntity.ok(link.getId());
     }
 
@@ -66,9 +65,8 @@ public class VerificationLinkRestController {
                                                          @CookieValue(name = "buyerToken", required = false) String token) {
         if (token == null) return ResponseEntity.status(401).build();
 
-        String visitorKey = tokenProvider.getSubject(token);
-        boolean success = verificationLinkService.settingVerificationLinkForVisitor(verificationLinkId, request, visitorKey);
-        return success ? ResponseEntity.ok("상세 설정 완료") : ResponseEntity.status(403).build();
+        verificationLinkService.settingVerificationLink(verificationLinkId, request);
+        return ResponseEntity.ok("상세 설정 완료");
     }
 
     @PostMapping("/link/{verificationLinkId}/link")
@@ -77,11 +75,7 @@ public class VerificationLinkRestController {
                                                                                         @CookieValue(name = "buyerToken", required = false) String token) {
         if (token == null) return ResponseEntity.status(401).build();
 
-        String visitorKey = tokenProvider.getSubject(token);
-        Optional<VerificationLink> optionalLink = verificationLinkService.getMyVerificationLink(verificationLinkId, visitorKey);
-        if (optionalLink.isEmpty()) return ResponseEntity.status(403).build();
-
-        VerificationLink link = optionalLink.get();
+        VerificationLink link = verificationLinkService.getLink(verificationLinkId);
 
         VerificationLinkResponse.LinkResponse response = VerificationLinkResponse.LinkResponse.builder()
                 .link(baseUrl + "/saber?token=" + link.getLinkToken())
@@ -96,6 +90,8 @@ public class VerificationLinkRestController {
     public ResponseEntity<VerificationLinkStatusResponse> getVerificationStatus(@PathVariable Long verificationLinkId) {
 
         VerificationLink link = verificationLinkService.getVerificationLink(verificationLinkId);
+        verificationLinkService.checkTimeout(verificationLinkId);
+        verificationLinkService.isPendingOrInProgress(verificationLinkId);
 
         VerificationLinkStatusResponse response = VerificationLinkStatusMapper.toResponse(link);
         return ResponseEntity.ok(response);

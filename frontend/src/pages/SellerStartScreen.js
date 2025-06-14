@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../css/Sellers.css'; 
-import { useTimer } from '../contexts/TimerContext';
+import '../css/Sellers.css';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SellerStartScreen() {
     const [searchParams] = useSearchParams();
@@ -10,57 +10,42 @@ export default function SellerStartScreen() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { timeLeft, isTimerRunning, resetTimer, formatTime } = useTimer();
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
-    useEffect(() => {
-        if (localStorage.getItem('sellerTimerLeft') === null || parseInt(localStorage.getItem('sellerTimerLeft')) <= 0) {
-            resetTimer();
-        }
-    }, [resetTimer]);
-    
-    useEffect(() => {
-        if (!isTimerRunning && timeLeft <= 0) {
-          navigate('/seller/verification-failed');
-        }
-    }, [isTimerRunning, timeLeft, navigate]);
 
     function getVisitorKey() {
         let key = localStorage.getItem('visitorKey');
         if (!key) {
-            key = crypto.randomUUID();
+            key = uuidv4();  // uuid 라이브러리로 UUID 생성
             localStorage.setItem('visitorKey', key);
         }
         return key;
     }
 
-    const startVerification = async (tokenToUse) => {
-        if (!tokenToUse) {
-            setError('토큰이 없습니다');
-            return;
-        }
+    const startVerification = async (token) => {
+        console.log("BASE_URL:", process.env.API_BASE_URL);
         setError('');
         setLoading(true);
         try {
             const visitorKey = getVisitorKey();
-            const res = await axios.get(`http://localhost:8080/api/saber`, {
+            const res = await axios.get(`${baseURL}/api/saber`, {
                 params: {
-                    token: tokenToUse,
+                    token: token,           // token 추가 필수
                     visitorKey: visitorKey,
                 },
                 withCredentials: true,
             });
 
-            // 세션을 다음 페이지에서 사용할 수 있도록 저장
             localStorage.setItem('sessionId', res.data.id);
-
-            // 자동 이동
             navigate('/seller/permission');
         } catch (e) {
+            console.error(e);
             setError('인증 시작 실패');
         } finally {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         const tokenFromUrl = searchParams.get('token');
@@ -76,20 +61,19 @@ export default function SellerStartScreen() {
     return (
         <div className="seller-start-container">
             <h2 className="title">판매자 인증 시작</h2>
-            <p className="timerText">인증 제한시간: {formatTime(timeLeft)}</p>
-                {timeLeft <= 0 && <p className="timeUpMessage" style={{ color: 'red', fontWeight: 'bold' }}>시간이 초과되었습니다!</p>}   
+
             {/* 버튼들을 감싸는 Flexbox 컨테이너 */}
             <div className="button-group">
-                <button 
-                    className="seller-start-button" 
-                    onClick={() => startVerification(token)} 
+                <button
+                    className="seller-start-button"
+                    onClick={() => startVerification(token)}
                     disabled={loading || !token}
                 >
                     인증 시작
                 </button>
                 {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-                <button 
-                    className="confirmButton" 
+                <button
+                    className="confirmButton"
                     onClick={goToGuide}
                 >
                     서비스 설명 및 사용법

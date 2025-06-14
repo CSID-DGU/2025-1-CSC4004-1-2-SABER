@@ -12,6 +12,7 @@ function ResultScreen() {
     const [loadingPhoto, setLoadingPhoto] = useState(false);
     const [photoError, setPhotoError] = useState(null);
     const [selectedFeedback, setSelectedFeedback] = useState(null);
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
 
     const verificationLinkId = localStorage.getItem("sessionId");
 
@@ -21,7 +22,7 @@ function ResultScreen() {
         // 2. verificationLinkId로 verification ID 목록 받아오기
         const fetchVerificationIds = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/api/saber/link/${verificationLinkId}/verification-ids`);
+                const res = await fetch(`${baseURL}/api/saber/link/${verificationLinkId}/verification-ids`);
                 if (!res.ok) throw new Error('인증 ID 목록을 불러오지 못했습니다.');
                 const ids = await res.json();
                 setVerificationIds(ids);
@@ -48,7 +49,7 @@ function ResultScreen() {
             setLoadingPhoto(true);
             setPhotoError(null);
             try {
-                const response = await fetch(`http://localhost:8080/api/verifications/${currentVerificationId}/photo`);
+                const response = await fetch(`${baseURL}/api/verifications/${currentVerificationId}/photo`);
                 if (!response.ok) throw new Error('사진을 불러오지 못했습니다.');
                 const url = await response.text();
                 setPhotoUrl(url);
@@ -70,6 +71,16 @@ function ResultScreen() {
         console.log('선택된 피드백:', selectedFeedback);
         navigate('/end');
     };
+
+    function generateRandomCode(length) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < length; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    }
+
 
     return (
         <div className="container">
@@ -113,12 +124,57 @@ function ResultScreen() {
 
             <div className="media-box">
                 {loadingPhoto && <p>사진 불러오는 중...</p>}
-                {photoError && <p style={{ color: 'red' }}>{photoError}</p>}
-                {photoUrl && <img src={photoUrl} alt="Verification" style={{ maxWidth: '100%', maxHeight: 400 }} />}
+                {photoError && <p style={{color: 'red'}}>{photoError}</p>}
                 {!loadingPhoto && !photoUrl && !photoError && <p>사진이 없습니다.</p>}
+
+                {photoUrl && (
+                    <div
+                        className="photo-wrapper"
+                        onContextMenu={(e) => e.preventDefault()}
+                        style={{
+                            position: 'relative',
+                            display: 'inline-block',
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            MozUserSelect: 'none'
+                        }}
+                    >
+                        <img
+                            src={photoUrl}
+                            alt="Verification"
+                            style={{
+                                maxWidth: '100%',
+                                maxHeight: 400,
+                                pointerEvents: 'none'
+                            }}
+                            draggable={false}
+                        />
+                        <div
+                            className="overlay-code"
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                backgroundColor: '',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '4rem',
+                                fontWeight: 'bold',
+                                color: 'white',
+                                opacity: 0.85,
+                                textAlign: 'center'
+                            }}
+                        >
+                            {generateRandomCode(6)}
+                        </div>
+                    </div>
+                )}
             </div>
 
-            <div className="slide-indicator" />
+            <div className="slide-indicator"/>
 
             <div className="feedback-container">
                 <div className="feedback-label">항목 인증 만족도</div>
